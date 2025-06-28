@@ -1,8 +1,13 @@
-import express from "express";
-import { homeEndpoint } from "../controllers/public/home.endpoint";
+import { Router } from "express";
 
-const publicRouter = express.Router();
+import { PublicController } from "../controllers/public.controller";
+import { DatabaseService } from "../services/database.service";
 
-publicRouter.get("/", homeEndpoint);
+export function generatePublicRoutes(databaseService: DatabaseService): Router {
+  const router = Router();
 
-export { publicRouter };
+  const controller = new PublicController(databaseService);
+  router.post("/", controller.post.bind(controller));
+
+  return router;
+}
