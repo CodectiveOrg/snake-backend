@@ -22,7 +22,7 @@ async function main(): Promise<void> {
   app.use(bodyParser.json());
   app.use(cors());
 
-  app.use(generatePublicRoutes(databaseService));
+  app.use("/api/", generatePublicRoutes(databaseService));
 
   app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}...`);
