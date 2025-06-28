@@ -1,8 +1,24 @@
-import express from "express";
-import { homeEndpoint } from "../controllers/public/home.endpoint";
+import { Router } from "express";
 
-const publicRouter = express.Router();
+import { HistoryController } from "../controllers/history.controller";
+import { DatabaseService } from "../services/database.service";
 
-publicRouter.get("/", homeEndpoint);
+export function generatePublicRoutes(databaseService: DatabaseService): Router {
+  const router = Router();
 
-export { publicRouter };
+  const historyController = new HistoryController(databaseService);
+
+  router.post(
+    "/history/",
+    historyController.createHistory.bind(historyController),
+  );
+
+  router.get(
+    "/leaderboard/",
+    historyController.readLeaderboard.bind(historyController),
+  );
+
+  router.post("/rank/", historyController.readUserRank.bind(historyController));
+
+  return router;
+}

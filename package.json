@@ -30,6 +30,8 @@
     "dotenv": "^16.6.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "rimraf": "^5.0.10"
+    "rimraf": "^5.0.10",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
   }
 }
