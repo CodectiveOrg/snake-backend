@@ -1,22 +1,18 @@
 import { Request, Response } from "express";
 import { QueryTypes, Sequelize } from "sequelize";
-
 import { DatabaseService } from "../services/database.service";
 
 export class HistoryController {
-  public constructor(private databaseService: DatabaseService) {}
+  public constructor(private databaseService: DatabaseService) { }
 
   public async createHistory(req: Request, res: Response): Promise<void> {
     const { username, score } = req.body;
-
     this.databaseService.History.create({ username, score });
-
     res.status(201).send({
       status: "success",
       message: "History created successfully.",
     });
   }
-
   public async readLeaderboard(req: Request, res: Response): Promise<void> {
     const records = await this.databaseService.History.findAll({
       attributes: [
