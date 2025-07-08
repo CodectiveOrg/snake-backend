@@ -2,19 +2,38 @@ import { Request, Response } from "express";
 import { QueryTypes, Sequelize } from "sequelize";
 
 import { DatabaseService } from "../services/database.service";
+import { createHistorySchema } from "../schemas/createHistory.schema";
+import { z } from "zod";
 
 export class HistoryController {
   public constructor(private databaseService: DatabaseService) {}
 
   public async createHistory(req: Request, res: Response): Promise<void> {
-    const { username, score } = req.body;
+    try {
+      const validateData = createHistorySchema.parse(req.body);
+      this.databaseService.History.create(validateData);
 
-    this.databaseService.History.create({ username, score });
-
-    res.status(201).send({
-      status: "success",
-      message: "History created successfully.",
-    });
+      res.status(201).send({
+        status: "success",
+        message: "History created successfully.",
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).send({
+          status: "error",
+          message: "Validation failed",
+          errors: error.errors.map((err) => ({
+            field: err.path.join("."),
+            message: err.message,
+          })),
+        });
+      } else {
+        res.status(500).send({
+          status: "error",
+          message: "Internal server error",
+        });
+      }
+    }
   }
 
   public async readLeaderboard(req: Request, res: Response): Promise<void> {
@@ -36,10 +55,10 @@ export class HistoryController {
   }
 
   public async readUserRank(req: Request, res: Response): Promise<void> {
-    const { username } = req.body;
-
-    const records = await this.databaseService.sequelize.query(
-      `
+    try {
+      const { username } = req.body;
+      const records = await this.databaseService.sequelize.query(
+        `
       SELECT * FROM 
       (
           SELECT username, max(score) as score, ROW_NUMBER() OVER (ORDER BY score DESC) AS rank
@@ -49,16 +68,33 @@ export class HistoryController {
       ) AS t
       WHERE t.username = ?;
     `,
-      {
-        type: QueryTypes.SELECT,
-        replacements: [username],
-      },
-    );
+        {
+          type: QueryTypes.SELECT,
+          replacements: [username],
+        },
+      );
 
-    res.status(200).send({
-      status: "success",
-      message: "Leaderboard read successfully.",
-      data: records,
-    });
+      res.status(200).send({
+        status: "success",
+        message: "Leaderboard read successfully.",
+        data: records,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).send({
+          status: "error",
+          message: "Validation failed",
+          errors: error.errors.map((err) => ({
+            field: err.path.join("."),
+            message: err.message,
+          })),
+        });
+      } else {
+        res.status(500).send({
+          status: "error",
+          message: "Internal server error",
+        });
+      }
+    }
   }
 }

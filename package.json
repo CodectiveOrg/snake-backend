@@ -32,6 +32,7 @@
     "jsonwebtoken": "^9.0.2",
     "rimraf": "^5.0.10",
     "sequelize": "^6.37.7",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "zod": "^3.25.75"
   }
 }
