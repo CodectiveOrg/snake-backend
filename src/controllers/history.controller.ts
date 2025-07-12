@@ -13,7 +13,7 @@ const UserNameSchema = z.object({
 });
 
 export class HistoryController {
-  public constructor(private databaseService: DatabaseService) { }
+  public constructor(private databaseService: DatabaseService) {}
 
   public async createHistory(req: Request, res: Response): Promise<void> {
     const { username, score } = req.body;
@@ -79,7 +79,7 @@ export class HistoryController {
         {
           type: QueryTypes.SELECT,
           replacements: [userNameSchema],
-        },
+        }
       );
 
       res.status(200).send({
