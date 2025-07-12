@@ -5,7 +5,7 @@ import { DatabaseService } from "../services/database.service";
 export function generatePublicRoutes(databaseService: DatabaseService): Router {
   const router = Router();
   const historyController = new HistoryController(databaseService);
-  
+
   router.post(
     "/history/",
     historyController.createHistory.bind(historyController),
