@@ -1,0 +1,411 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Snake Api",
+    "description": "API for user authentication and game history management",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "paths": {
+    "/auth/sign_in": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "User sign in",
+        "description": "Authenticates a user and returns a success message",
+        "requestBody": {
+          "description": "User credentials",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful sign in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignInResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/sign_up": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "User sign_up",
+        "description": "Create a new user",
+        "requestBody": {
+          "description": "User credentials",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful sign up",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignUPResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (username already taken)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/sign_out": {
+      "delete": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "User sign out",
+        "description": "Clears the authentication token cookie and logs the user out",
+        "responses": {
+          "200": {
+            "description": "Successful sign out",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignOutResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "User verify",
+        "description": "Verifies user authentication using a token",
+        "responses": {
+          "200": {
+            "description": "Successful verify"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/history": {
+      "post": {
+        "tags": [
+          "history"
+        ],
+        "summary": "User history",
+        "description": "Create game history",
+        "requestBody": {
+          "description": "Game history details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateHistoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful creation of game history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid input)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leaderboard": {
+      "get": {
+        "tags": [
+          "history"
+        ],
+        "summary": "Get leaderboard",
+        "description": "Retrieves the leaderboard with top user scores (up to 5 users)",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of leaderboard",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaderboardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/rank": {
+      "post": {
+        "tags": [
+          "history"
+        ],
+        "summary": "Get user rank",
+        "description": "Retrieves the user's rank based on their highest score",
+        "requestBody": {
+          "description": "User identifier",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRankRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of user rank",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRankResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid input)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SignInRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "testuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "SignInResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "sign in success"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "SignUpRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "newuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "SignUpResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "sign up succes"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "SignOutResponse": {
+        "type": "string",
+        "example": "sign Out successfully"
+      },
+      "CreateHistoryRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "testuser",
+            "description": "نام کاربری"
+          },
+          "score": {
+            "type": "integer",
+            "example": "100",
+            "description": "امتیاز کاربر"
+          }
+        },
+        "required": [
+          "username",
+          "score"
+        ]
+      },
+      "CreateHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "وضعیت عملیات"
+          },
+          "message": {
+            "type": "string",
+            "example": "History created successfully.",
+            "description": "پیام نتیجه عملیات"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "LeaderboardResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "وضعیت عملیات"
+          },
+          "message": {
+            "type": "string",
+            "example": "Leaderboard read successfully",
+            "description": "پیام نتیجه عملیات"
+          },
+          "data": {
+            "type": "string",
+            "example": "History created successfully.",
+            "description": "پیام نتیجه عملیات"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+       "UserRankRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "testuser",
+            "description": "نام کاربری"
+          }
+        },
+        "required": [
+          "username"]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "username or password is incorrect",
+            "examples": {
+              "sign_in_error": {
+                "value": "username or password is incorrect"
+              },
+              "sign_up_error": {
+                "value": "username IS ALREADY TAKEN"
+              },
+              "history_error": {
+                "value": "Invalid history data"
+              },
+              "leaderboard_error": {
+                "value": "Database error"
+              },
+              "rank_error": {
+                "value": "User not found"
+              }
+            }
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    }
+  }
+}

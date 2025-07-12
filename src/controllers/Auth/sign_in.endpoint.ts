@@ -3,7 +3,7 @@ import { readUser } from "../../database/user.table"
 import { UserModel } from "../../models/user.model"
 import { comparePassword, generateToken } from "../../utils/auth.utils"
 
-export const SignInEndpoint = async (res: Response, req: Request) => {
+export const SignInEndpoint = async (req: Request, res: Response) => {
   const { username, password } = req.body
   const user: UserModel | undefined = readUser(username)
   if (!user) {

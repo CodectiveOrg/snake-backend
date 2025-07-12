@@ -7,7 +7,7 @@ export const generateToken = (res: Response, user: passwordLessModel): void => {
     const payload = {
         user
     };
-    const token: string = jwt.sign(payload, process.env.TOKEN_SECRE!, { expiresIn: '3d  ' })
+    const token: string = jwt.sign(payload, process.env.TOKEN_SECRE!, { expiresIn: '3d' })
     res.cookie('token', token, {
         secure: true,
         httpOnly: true,
