@@ -1,17 +1,27 @@
+import { z } from "zod";
 import { Request, Response } from "express";
 import { QueryTypes, Sequelize } from "sequelize";
 
 import { DatabaseService } from "../services/database.service";
-import { createHistorySchema } from "../schemas/createHistory.schema";
-import { z } from "zod";
+
+const HistorySchema = z.object({
+  username: z.string(),
+  score: z.number(),
+});
+
+const UserNameSchema = z.object({
+  username: z.string(),
+});
 
 export class HistoryController {
   public constructor(private databaseService: DatabaseService) {}
 
   public async createHistory(req: Request, res: Response): Promise<void> {
+    const { username, score } = req.body;
+
     try {
-      const validateData = createHistorySchema.parse(req.body);
-      this.databaseService.History.create(validateData);
+      const historySchema = HistorySchema.parse({ username, score });
+      await this.databaseService.History.create(historySchema);
 
       res.status(201).send({
         status: "success",
@@ -21,16 +31,14 @@ export class HistoryController {
       if (error instanceof z.ZodError) {
         res.status(400).send({
           status: "error",
-          message: "Validation failed",
-          errors: error.errors.map((err) => ({
-            field: err.path.join("."),
-            message: err.message,
-          })),
+          message: "Invalid input",
+          details: error.issues,
         });
       } else {
         res.status(500).send({
           status: "error",
-          message: "Internal server error",
+          message: "Unexpected error",
+          details: "Internal server error",
         });
       }
     }
@@ -55,8 +63,10 @@ export class HistoryController {
   }
 
   public async readUserRank(req: Request, res: Response): Promise<void> {
+    const { username } = req.body;
+
     try {
-      const { username } = req.body;
+      const userNameSchema = UserNameSchema.parse({ username });
       const records = await this.databaseService.sequelize.query(
         `
       SELECT * FROM 
@@ -70,7 +80,7 @@ export class HistoryController {
     `,
         {
           type: QueryTypes.SELECT,
-          replacements: [username],
+          replacements: [userNameSchema],
         },
       );
 
@@ -83,16 +93,14 @@ export class HistoryController {
       if (error instanceof z.ZodError) {
         res.status(400).send({
           status: "error",
-          message: "Validation failed",
-          errors: error.errors.map((err) => ({
-            field: err.path.join("."),
-            message: err.message,
-          })),
+          message: "Invalid input",
+          details: error.issues,
         });
       } else {
         res.status(500).send({
           status: "error",
-          message: "Internal server error",
+          message: "Unexpected error",
+          details: "Internal server error",
         });
       }
     }
