@@ -362,7 +362,8 @@
         },
         "required": [
           "status",
-          "message"
+          "message",
+          "data"
         ]
       },
        "UserRankRequest": {
@@ -376,6 +377,32 @@
         },
         "required": [
           "username"]
+      },
+        "UserRankResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success",
+            "description": "وضعیت عملیات"
+          },
+          "message": {
+            "type": "string",
+            "example": "History created successfully.",
+            "description": "پیام نتیجه عملیات"
+          },
+            "data": {
+            "type": "string",
+            "example": "History created successfully.",
+            "description": "پیام نتیجه عملیات"
+          }
+        },
+         "required": [
+          "status",
+          "message",
+          "data"
+        ]
+       
       },
       "Error": {
         "type": "object",
