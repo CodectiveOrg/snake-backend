@@ -1,35 +1,26 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Snake Api",
-    "description": "API for user authentication and game history management",
+    "title": "History API",
     "version": "1.0.0"
   },
-  "servers": [
-    {
-      "url": "http://localhost:5000"
-    }
-  ],
   "paths": {
     "/api/history": {
       "post": {
-        "tags": ["history"],
-        "summary": "User history",
-        "description": "Create game history",
+        "summary": "Create a new user history",
         "requestBody": {
-          "description": "Game history details",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateHistoryRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "201": {
-            "description": "Successful creation of game history",
+            "description": "History created successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -39,7 +30,17 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid input)",
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
             "content": {
               "application/json": {
                 "schema": {
@@ -53,16 +54,34 @@
     },
     "/api/leaderboard": {
       "get": {
-        "tags": ["history"],
-        "summary": "Get leaderboard",
-        "description": "Retrieves the leaderboard with top user scores (up to 5 users)",
+        "summary": "Get top 5 users with highest scores",
         "responses": {
           "200": {
-            "description": "Successful retrieval of leaderboard",
+            "description": "List of top 5 users",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LeaderboardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
@@ -72,23 +91,20 @@
     },
     "/api/rank": {
       "post": {
-        "tags": ["history"],
-        "summary": "Get user rank",
-        "description": "Retrieves the user's rank based on their highest score",
+        "summary": "Get the rank of a specific user based on score",
         "requestBody": {
-          "description": "User identifier",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UserRankRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
-            "description": "Successful retrieval of user rank",
+            "description": "User rank result",
             "content": {
               "application/json": {
                 "schema": {
@@ -98,7 +114,17 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid input)",
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
             "content": {
               "application/json": {
                 "schema": {
@@ -118,13 +144,11 @@
         "properties": {
           "username": {
             "type": "string",
-            "example": "testuser",
-            "description": "نام کاربری"
+            "example": "Yasaman"
           },
           "score": {
             "type": "integer",
-            "example": "100",
-            "description": "امتیاز کاربر"
+            "example": 450
           }
         },
         "required": ["username", "score"]
@@ -134,66 +158,122 @@
         "properties": {
           "status": {
             "type": "string",
-            "example": "success",
-            "description": "وضعیت عملیات"
+            "example": "success"
           },
           "message": {
             "type": "string",
-            "example": "History created successfully.",
-            "description": "پیام نتیجه عملیات"
+            "example": "History created successfully"
           }
         },
         "required": ["status", "message"]
-      },
-      "LeaderboardResponse": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "success",
-            "description": "وضعیت عملیات"
-          },
-          "message": {
-            "type": "string",
-            "example": "Leaderboard read successfully",
-            "description": "پیام نتیجه عملیات"
-          },
-          "data": {
-            "type": "string",
-            "example": "History created successfully.",
-            "description": "پیام نتیجه عملیات"
-          }
-        },
-        "required": ["status", "message", "data"]
       },
       "UserRankRequest": {
         "type": "object",
         "properties": {
           "username": {
             "type": "string",
-            "example": "testuser",
-            "description": "نام کاربری"
+            "example": "Yasaman"
           }
         },
         "required": ["username"]
+      },
+      "UserScore": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "Yasaman"
+          },
+          "score": {
+            "type": "integer",
+            "example": 450
+          }
+        },
+        "required": ["username", "score"]
+      },
+      "UserRank": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "Yasaman"
+          },
+          "score": {
+            "type": "integer",
+            "example": 450
+          },
+          "rank": {
+            "type": "integer",
+            "example": 2
+          }
+        },
+        "required": ["username", "score", "rank"]
+      },
+      "LeaderboardResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Top 5 scores retrieved"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserScore"
+            },
+            "example": [
+              {
+                "username": "Yasaman",
+                "score": 450
+              },
+              {
+                "username": "Ali",
+                "score": 400
+              },
+              {
+                "username": "Reza",
+                "score": 350
+              },
+              {
+                "username": "Mohsen",
+                "score": 300
+              },
+              {
+                "username": "Bijan",
+                "score": 250
+              }
+            ]
+          }
+        },
+        "required": ["status", "message", "data"]
       },
       "UserRankResponse": {
         "type": "object",
         "properties": {
           "status": {
             "type": "string",
-            "example": "success",
-            "description": "وضعیت عملیات"
+            "example": "success"
           },
           "message": {
             "type": "string",
-            "example": "History created successfully.",
-            "description": "پیام نتیجه عملیات"
+            "example": "User rank retrieved"
           },
           "data": {
-            "type": "string",
-            "example": "History created successfully.",
-            "description": "پیام نتیجه عملیات"
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRank"
+            },
+            "example": [
+              {
+                "username": "Yasaman",
+                "score": 450,
+                "rank": 2
+              }
+            ]
           }
         },
         "required": ["status", "message", "data"]
@@ -201,29 +281,20 @@
       "Error": {
         "type": "object",
         "properties": {
-          "error": {
+          "status": {
             "type": "string",
-            "example": "username or password is incorrect",
-            "examples": {
-              "sign_in_error": {
-                "value": "username or password is incorrect"
-              },
-              "sign_up_error": {
-                "value": "username IS ALREADY TAKEN"
-              },
-              "history_error": {
-                "value": "Invalid history data"
-              },
-              "leaderboard_error": {
-                "value": "Database error"
-              },
-              "rank_error": {
-                "value": "User not found"
-              }
-            }
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "details": {
+            "type": "string",
+            "example": "Username is required"
           }
         },
-        "required": ["error"]
+        "required": ["status", "message"]
       }
     }
   }
