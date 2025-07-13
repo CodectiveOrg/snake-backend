@@ -30,9 +30,10 @@
     "dotenv": "^16.6.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "reflect-metadata": "^0.2.2",
     "rimraf": "^5.0.10",
-    "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.25",
     "zod": "^3.25.76"
   }
 }
