@@ -4,19 +4,11 @@ import { DatabaseService } from "../services/database.service";
 
 export function generatePublicRoutes(databaseService: DatabaseService): Router {
   const router = Router();
-  const historyController = new HistoryController(databaseService);
+  const controller = new HistoryController(databaseService);
 
-  router.post(
-    "/history",
-    historyController.createHistory.bind(historyController),
-  );
-
-  router.get(
-    "/leaderboard",
-    historyController.getLeaderboard.bind(historyController),
-  );
-
-  router.post("/rank", historyController.getUserRank.bind(historyController));
+  router.post("/history", controller.createHistory);
+  router.get("/leaderboard", controller.getLeaderboard);
+  router.post("/rank", controller.getUserRank);
 
   return router;
 }
