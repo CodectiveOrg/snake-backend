@@ -16,7 +16,7 @@ export function generatePublicRoutes(databaseService: DatabaseService): Router {
     historyController.getLeaderboard.bind(historyController),
   );
 
-  router.post("/rank", historyController.readUserRank.bind(historyController));
+  router.post("/rank", historyController.getUserRank.bind(historyController));
 
   return router;
 }

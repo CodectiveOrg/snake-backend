@@ -28,7 +28,7 @@ export class HistoryController {
     const records = await this.historyRepo
       .createQueryBuilder("history")
       .select("history.username", "username")
-      .addSelect("MAX(history.score)", "maxScore")
+      .addSelect("MAX(history.score)", "highScore")
       .groupBy("username")
       .orderBy("history.score", "DESC")
       .limit(5)
@@ -36,35 +36,35 @@ export class HistoryController {
 
     res.status(200).send({
       status: "success",
-      message: "Leaderboard read successfully.",
+      message: "Leaderboard fetched successfully.",
       data: records,
     });
   }
 
-  public async readUserRank(req: Request, res: Response): Promise<void> {
-    // const { username } = req.body;
-    //
-    // const records = await this.databaseService.sequelize.query(
-    //   `
-    //   SELECT * FROM
-    //   (
-    //       SELECT username, max(score) as score, ROW_NUMBER() OVER (ORDER BY score DESC) AS rank
-    //           FROM Histories
-    //           GROUP BY username
-    //           ORDER BY score DESC
-    //   ) AS t
-    //   WHERE t.username = ?;
-    // `,
-    //   {
-    //     type: QueryTypes.SELECT,
-    //     replacements: [username],
-    //   },
-    // );
+  public async getUserRank(req: Request, res: Response): Promise<void> {
+    const { username } = req.body;
+
+    const records = await this.databaseService.dataSource
+      .createQueryBuilder()
+      .select()
+      .from(
+        (subQuery) =>
+          subQuery
+            .select("history.username", "username")
+            .addSelect("MAX(history.score)", "highScore")
+            .addSelect("ROW_NUMBER() OVER (ORDER BY score DESC)", "rank")
+            .from(History, "history")
+            .groupBy("history.username")
+            .orderBy("history.score", "DESC"),
+        "t",
+      )
+      .where("t.username = :username", { username })
+      .getRawMany();
 
     res.status(200).send({
       status: "success",
-      message: "Leaderboard read successfully.",
-      data: [],
+      message: "User's rank fetched successfully.",
+      data: records,
     });
   }
 }
