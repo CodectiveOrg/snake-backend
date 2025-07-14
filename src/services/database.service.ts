@@ -1,4 +1,5 @@
 import { DataSource } from "typeorm";
+import { User } from "../entities/user";
 import { History } from "../entities/history";
 
 export class DatabaseService {
@@ -8,7 +9,7 @@ export class DatabaseService {
     this.dataSource = new DataSource({
       type: "sqlite",
       database: "database/snake.sqlite",
-      entities: [History],
+      entities: [User, History],
       synchronize: true,
       logging: true,
     });
