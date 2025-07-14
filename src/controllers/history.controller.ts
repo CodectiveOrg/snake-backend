@@ -46,7 +46,7 @@ export class HistoryController {
     }
   }
 
-  public async getLeaderboard(req: Request, res: Response): Promise<void> {
+  public async getLeaderboard(_: Request, res: Response): Promise<void> {
     const records = await this.historyRepo
       .createQueryBuilder("history")
       .select("history.username", "username")
