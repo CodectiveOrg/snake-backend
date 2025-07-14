@@ -6,7 +6,7 @@ export class History {
   public id!: string;
 
   @Column("int")
-  public score!: string;
+  public score!: number;
 
   @Column("text")
   public username!: string;
