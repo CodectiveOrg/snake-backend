@@ -13,7 +13,7 @@ export function generatePublicRoutes(databaseService: DatabaseService): Router {
 
   router.get(
     "/leaderboard",
-    historyController.readLeaderboard.bind(historyController),
+    historyController.getLeaderboard.bind(historyController),
   );
 
   router.post("/rank", historyController.readUserRank.bind(historyController));

@@ -24,25 +24,15 @@ export class HistoryController {
     });
   }
 
-  public async readLeaderboard(req: Request, res: Response): Promise<void> {
+  public async getLeaderboard(req: Request, res: Response): Promise<void> {
     const records = await this.historyRepo
       .createQueryBuilder("history")
-      .select("history")
-      .from(History, "history")
-      .groupBy("history.user.id")
-      .orderBy("history.user.username")
+      .select("history.username", "username")
+      .addSelect("MAX(history.score)", "maxScore")
+      .groupBy("username")
+      .orderBy("history.score", "DESC")
       .limit(5)
-      .getMany();
-
-    // const records = await this.databaseService.History.findAll({
-    //   attributes: [
-    //     "username",
-    //     [Sequelize.fn("MAX", Sequelize.col("score")), "score"],
-    //   ],
-    //   group: "username",
-    //   order: [["score", "DESC"]],
-    //   limit: 5,
-    // });
+      .getRawMany();
 
     res.status(200).send({
       status: "success",
