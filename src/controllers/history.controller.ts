@@ -1,27 +1,25 @@
-import { z } from "zod";
 import { Request, Response } from "express";
-import { QueryTypes, Sequelize } from "sequelize";
-
+import { z } from "zod";
 import { DatabaseService } from "../services/database.service";
-
-const HistorySchema = z.object({
-  username: z.string(),
-  score: z.number(),
-});
-
-const UserNameSchema = z.object({
-  username: z.string(),
-});
+import { History } from "../entities/history";
 
 export class HistoryController {
-  public constructor(private databaseService: DatabaseService) {}
+  private historyRepo;
+
+  public constructor(private databaseService: DatabaseService) {
+    this.historyRepo = databaseService.dataSource.getRepository(History);
+  }
 
   public async createHistory(req: Request, res: Response): Promise<void> {
-    const { username, score } = req.body;
-
     try {
-      const historySchema = HistorySchema.parse({ username, score });
-      await this.databaseService.History.create(historySchema);
+      const body = CreateHistoryBodySchema.parse(req.body);
+      const { username, score } = body;
+
+      const history = new History();
+      history.username = username;
+      history.score = score;
+
+      await this.historyRepo.save(history);
 
       res.status(201).send({
         status: "success",
@@ -44,49 +42,48 @@ export class HistoryController {
     }
   }
 
-  public async readLeaderboard(req: Request, res: Response): Promise<void> {
-    const records = await this.databaseService.History.findAll({
-      attributes: [
-        "username",
-        [Sequelize.fn("MAX", Sequelize.col("score")), "score"],
-      ],
-      group: "username",
-      order: [["score", "DESC"]],
-      limit: 5,
-    });
+  public async getLeaderboard(req: Request, res: Response): Promise<void> {
+    const records = await this.historyRepo
+      .createQueryBuilder("history")
+      .select("history.username", "username")
+      .addSelect("MAX(history.score)", "highScore")
+      .groupBy("username")
+      .orderBy("history.score", "DESC")
+      .limit(5)
+      .getRawMany();
 
     res.status(200).send({
       status: "success",
-      message: "Leaderboard read successfully.",
+      message: "Leaderboard fetched successfully.",
       data: records,
     });
   }
 
-  public async readUserRank(req: Request, res: Response): Promise<void> {
-    const { username } = req.body;
-
+  public async getUserRank(req: Request, res: Response): Promise<void> {
     try {
-      const userNameSchema = UserNameSchema.parse({ username });
-      const records = await this.databaseService.sequelize.query(
-        `
-      SELECT * FROM 
-      (
-          SELECT username, max(score) as score, ROW_NUMBER() OVER (ORDER BY score DESC) AS rank
-              FROM Histories
-              GROUP BY username
-              ORDER BY score DESC
-      ) AS t
-      WHERE t.username = ?;
-    `,
-        {
-          type: QueryTypes.SELECT,
-          replacements: [userNameSchema],
-        },
-      );
+      const body = GetUserRankBodySchema.parse(req.body);
+      const { username } = body;
+
+      const records = await this.databaseService.dataSource
+        .createQueryBuilder()
+        .select()
+        .from(
+          (subQuery) =>
+            subQuery
+              .select("history.username", "username")
+              .addSelect("MAX(history.score)", "highScore")
+              .addSelect("ROW_NUMBER() OVER (ORDER BY score DESC)", "rank")
+              .from(History, "history")
+              .groupBy("history.username")
+              .orderBy("history.score", "DESC"),
+          "t",
+        )
+        .where("t.username = :username", { username })
+        .getRawMany();
 
       res.status(200).send({
         status: "success",
-        message: "Leaderboard read successfully.",
+        message: "User's rank fetched successfully.",
         data: records,
       });
     } catch (error) {
@@ -106,3 +103,12 @@ export class HistoryController {
     }
   }
 }
+
+const CreateHistoryBodySchema = z.object({
+  username: z.string(),
+  score: z.number(),
+});
+
+const GetUserRankBodySchema = z.object({
+  username: z.string(),
+});

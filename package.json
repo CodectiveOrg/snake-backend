@@ -6,13 +6,15 @@
     "start": "tsx src/app.ts",
     "prebuild": "rimraf dist/",
     "build": "tsc",
-    "preview": "node dist/app.js"
+    "preview": "node dist/app.js",
+    "seed": "tsx database/seed.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^20.17.16",
+    "@types/swagger-ui-express": "^4.1.8",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.1",
@@ -30,11 +32,12 @@
     "dotenv": "^16.6.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "reflect-metadata": "^0.2.2",
     "rimraf": "^5.0.10",
-    "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7",
     "swagger-ui": "^5.26.2",
     "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.25",
     "zod": "^3.25.76"
   }
 }
