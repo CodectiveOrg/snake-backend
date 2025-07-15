@@ -19,6 +19,7 @@ export class AuthController {
     this.signIn = this.signIn.bind(this);
     this.signOut = this.signOut.bind(this);
     this.verify = this.verify.bind(this);
+    this.helloFriend = this.helloFriend.bind(this);
   }
 
   public async signUp(req: Request, res: Response): Promise<void> {

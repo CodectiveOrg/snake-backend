@@ -11,6 +11,7 @@ export function generateAuthRoutes(databaseService: DatabaseService): Router {
   router.post("/sign-up", controller.signUp);
   router.delete("/sign-out", controller.signOut);
   router.get("/verify", authMiddleware, controller.verify);
+  router.get("/hello-friend", controller.helloFriend);
 
   return router;
 }
