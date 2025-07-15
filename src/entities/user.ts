@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { History } from "./history";
 
 @Entity()
 export class User {
@@ -13,4 +14,7 @@ export class User {
 
   @Column("text")
   public password!: string;
+
+  @OneToMany(() => History, (history) => history.user)
+  public histories!: History[];
 }

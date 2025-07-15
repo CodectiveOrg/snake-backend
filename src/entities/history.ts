@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { User } from "./user";
 
 @Entity()
 export class History {
@@ -10,4 +11,7 @@ export class History {
 
   @Column("text")
   public username!: string;
+
+  @ManyToOne(() => User, (user) => user.histories)
+  public user!: User;
 }
