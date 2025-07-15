@@ -121,7 +121,7 @@ export class AuthController {
   }
 
   public async helloFriend(_: Request, res: Response): Promise<void> {
-    res.json({ message: "Hello, friend!" });
+    res.status(418).json({ message: "Hello, friend!" });
   }
 }
 
