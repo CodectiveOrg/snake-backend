@@ -11,6 +11,7 @@ import { validateEnv } from "./utils/env.utils";
 import { DatabaseService } from "./services/database.service";
 import { generatePublicRoutes } from "./routes/public.route";
 import { generateAuthRoutes } from "./routes/auth.route";
+import { generateSettingRoutes } from "./routes/setting.route";
 
 const PORT = process.env.PORT || 5000;
 
@@ -30,6 +31,7 @@ async function main(): Promise<void> {
   app.use(cors({ credentials: true }));
 
   app.use("/api", generatePublicRoutes(databaseService));
+  app.use("/api/setting", generateSettingRoutes(databaseService));
   app.use("/api/auth", generateAuthRoutes(databaseService));
   app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
