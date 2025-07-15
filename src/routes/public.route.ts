@@ -18,5 +18,10 @@ export function generatePublicRoutes(databaseService: DatabaseService): Router {
 
   router.post("/rank", historyController.getUserRank.bind(historyController));
 
+  router.post(
+    "/best-score",
+    historyController.getBestScoreByUsername.bind(historyController),
+  );
+
   return router;
 }

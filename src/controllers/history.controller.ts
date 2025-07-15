@@ -102,6 +102,44 @@ export class HistoryController {
       }
     }
   }
+
+  public async getBestScoreByUsername(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    try {
+      const body = GetBestScoreByUsernameSchema.parse(req.body);
+      const { username } = body;
+      const records = await this.databaseService.dataSource
+        .createQueryBuilder()
+        .select("history.username", "username")
+        .addSelect("MAX(history.score)", "maxScore")
+        .from(History, "history")
+        .where("username = :username", { username })
+        .groupBy("history.username")
+        .getRawOne();
+
+      res.status(200).send({
+        status: "success",
+        message: "Player's scores fetched successfully.",
+        data: records,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).send({
+          status: "error",
+          message: "Invalid input",
+          details: error.issues,
+        });
+      } else {
+        res.status(500).send({
+          status: "error",
+          message: "Unexpected error",
+          details: "Internal server error",
+        });
+      }
+    }
+  }
 }
 
 const CreateHistoryBodySchema = z.object({
@@ -110,5 +148,9 @@ const CreateHistoryBodySchema = z.object({
 });
 
 const GetUserRankBodySchema = z.object({
+  username: z.string(),
+});
+
+const GetBestScoreByUsernameSchema = z.object({
   username: z.string(),
 });
