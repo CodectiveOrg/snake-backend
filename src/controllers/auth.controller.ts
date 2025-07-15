@@ -118,6 +118,10 @@ export class AuthController {
 
     res.json({ user });
   }
+
+  public async helloFriend(_: Request, res: Response): Promise<void> {
+    res.json({ message: "Hello, friend!" });
+  }
 }
 
 const SignUpBodySchema = z.object({
