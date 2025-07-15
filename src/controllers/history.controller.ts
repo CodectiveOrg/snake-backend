@@ -8,6 +8,10 @@ export class HistoryController {
 
   public constructor(private databaseService: DatabaseService) {
     this.historyRepo = databaseService.dataSource.getRepository(History);
+
+    this.createHistory = this.createHistory.bind(this);
+    this.getLeaderboard = this.getLeaderboard.bind(this);
+    this.getUserRank = this.getUserRank.bind(this);
   }
 
   public async createHistory(req: Request, res: Response): Promise<void> {
@@ -42,7 +46,7 @@ export class HistoryController {
     }
   }
 
-  public async getLeaderboard(req: Request, res: Response): Promise<void> {
+  public async getLeaderboard(_: Request, res: Response): Promise<void> {
     const records = await this.historyRepo
       .createQueryBuilder("history")
       .select("history.username", "username")
