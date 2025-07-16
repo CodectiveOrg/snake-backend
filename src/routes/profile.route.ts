@@ -9,7 +9,7 @@ export function generateProfileRoutes(
   const router = Router();
   const controller = new ProfileController(databaseService);
 
-  router.get("/info", authMiddleware, controller.getProfileInfo);
+  router.get("/", authMiddleware, controller.getProfile);
 
   return router;
 }
