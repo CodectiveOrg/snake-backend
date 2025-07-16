@@ -19,40 +19,24 @@ export class HistoryController {
   }
 
   public async createHistory(req: Request, res: Response): Promise<void> {
-    try {
-      const { username } = res.locals.user;
+    const { username } = res.locals.user;
 
-      const body = CreateHistoryBodySchema.parse(req.body);
-      const { score } = body;
+    const body = CreateHistoryBodySchema.parse(req.body);
+    const { score } = body;
 
-      const user = await this.userRepo.findOne({ where: { username } });
+    const user = await this.userRepo.findOne({ where: { username } });
 
-      if (!user) {
-        res.status(401).send();
-        return;
-      }
-
-      await this.historyRepo.save({ score, user });
-
-      res.status(201).send({
-        status: "success",
-        message: "History created successfully.",
-      });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).send({
-          status: "error",
-          message: "Invalid input",
-          details: error.issues,
-        });
-      } else {
-        res.status(500).send({
-          status: "error",
-          message: "Unexpected error",
-          details: "Internal server error",
-        });
-      }
+    if (!user) {
+      res.status(401).send();
+      return;
     }
+
+    await this.historyRepo.save({ score, user });
+
+    res.status(201).send({
+      status: "success",
+      message: "History created successfully.",
+    });
   }
 
   public async getLeaderboard(_: Request, res: Response): Promise<void> {
@@ -73,88 +57,56 @@ export class HistoryController {
   }
 
   public async getUserRank(req: Request, res: Response): Promise<void> {
-    try {
-      const body = GetUserRankBodySchema.parse(req.body);
-      const { username } = body;
+    const body = GetUserRankBodySchema.parse(req.body);
+    const { username } = body;
 
-      const records = await this.databaseService.dataSource
-        .createQueryBuilder()
-        .select()
-        .from(
-          (subQuery) =>
-            subQuery
-              .select("history.username", "username")
-              .addSelect("MAX(history.score)", "highScore")
-              .addSelect("ROW_NUMBER() OVER (ORDER BY score DESC)", "rank")
-              .from(History, "history")
-              .groupBy("history.username")
-              .orderBy("history.score", "DESC"),
-          "t",
-        )
-        .where("t.username = :username", { username })
-        .getRawMany();
+    const records = await this.databaseService.dataSource
+      .createQueryBuilder()
+      .select()
+      .from(
+        (subQuery) =>
+          subQuery
+            .select("history.username", "username")
+            .addSelect("MAX(history.score)", "highScore")
+            .addSelect("ROW_NUMBER() OVER (ORDER BY score DESC)", "rank")
+            .from(History, "history")
+            .groupBy("history.username")
+            .orderBy("history.score", "DESC"),
+        "t",
+      )
+      .where("t.username = :username", { username })
+      .getRawMany();
 
-      res.status(200).send({
-        status: "success",
-        message: "User's rank fetched successfully.",
-        data: records,
-      });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).send({
-          status: "error",
-          message: "Invalid input",
-          details: error.issues,
-        });
-      } else {
-        res.status(500).send({
-          status: "error",
-          message: "Unexpected error",
-          details: "Internal server error",
-        });
-      }
-    }
+    res.status(200).send({
+      status: "success",
+      message: "User's rank fetched successfully.",
+      data: records,
+    });
   }
 
   public async getHighScore(_: Request, res: Response): Promise<void> {
-    try {
-      const { username } = res.locals.user;
+    const { username } = res.locals.user;
 
-      const user = await this.userRepo.findOne({ where: { username } });
+    const user = await this.userRepo.findOne({ where: { username } });
 
-      if (!user) {
-        res.sendStatus(401);
-        return;
-      }
-
-      const record = await this.databaseService.dataSource
-        .createQueryBuilder()
-        .select("MAX(history.score)", "highScore")
-        .from(History, "history")
-        .where("history.userId = :userId", { userId: user.id })
-        .groupBy("history.userId")
-        .getRawOne();
-
-      res.status(200).send({
-        status: "success",
-        message: "Player's high score fetched successfully.",
-        data: record,
-      });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).send({
-          status: "error",
-          message: "Invalid input",
-          details: error.issues,
-        });
-      } else {
-        res.status(500).send({
-          status: "error",
-          message: "Unexpected error",
-          details: "Internal server error",
-        });
-      }
+    if (!user) {
+      res.sendStatus(401);
+      return;
     }
+
+    const record = await this.databaseService.dataSource
+      .createQueryBuilder()
+      .select("MAX(history.score)", "highScore")
+      .from(History, "history")
+      .where("history.userId = :userId", { userId: user.id })
+      .groupBy("history.userId")
+      .getRawOne();
+
+    res.status(200).send({
+      status: "success",
+      message: "Player's high score fetched successfully.",
+      data: record,
+    });
   }
 }
 

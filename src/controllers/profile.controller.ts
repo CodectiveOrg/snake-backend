@@ -15,40 +15,24 @@ export class ProfileController {
   }
 
   public async getProfile(_: Request, res: Response): Promise<void> {
-    try {
-      const { username } = res.locals.user;
+    const { username } = res.locals.user;
 
-      const user = await this.userRepo.findOne({ where: { username } });
+    const user = await this.userRepo.findOne({ where: { username } });
 
-      if (!user) {
-        res.sendStatus(401);
-        return;
-      }
-
-      const record = await this.profileRepo.findOne({
-        where: { username: user.username },
-        select: { username: true, email: true },
-      });
-
-      res.send({
-        status: "success",
-        message: "Profile info fetched successfully.",
-        data: record,
-      });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).send({
-          status: "error",
-          message: "Invalid input",
-          details: error.issues,
-        });
-      } else {
-        res.status(500).send({
-          status: "error",
-          message: "Unexpected error",
-          details: "Internal server error",
-        });
-      }
+    if (!user) {
+      res.sendStatus(401);
+      return;
     }
+
+    const record = await this.profileRepo.findOne({
+      where: { username: user.username },
+      select: { username: true, email: true },
+    });
+
+    res.send({
+      status: "success",
+      message: "Profile info fetched successfully.",
+      data: record,
+    });
   }
 }
