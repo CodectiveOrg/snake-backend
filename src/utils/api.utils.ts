@@ -1,31 +1,32 @@
-import { Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
-export async function wrapWithTryCatch(
+export async function globalErrorHandler(
+  err: unknown,
+  _req: Request,
   res: Response,
-  callback: () => Promise<void>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction,
 ): Promise<void> {
-  try {
-    await callback();
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      res.status(400).send({
-        status: "error",
-        message: "Invalid input",
-        details: error.issues,
-      });
-    } else if (error instanceof Error) {
-      res.status(500).send({
-        status: "error",
-        message: "Unexpected error",
-        details: error.message,
-      });
-    } else {
-      res.status(500).send({
-        status: "error",
-        message: "Unexpected error",
-        details: "Internal server error",
-      });
-    }
+  console.log("here");
+
+  if (err instanceof z.ZodError) {
+    res.status(400).send({
+      status: "error",
+      message: "Invalid input",
+      details: err.issues,
+    });
+  } else if (err instanceof Error) {
+    res.status(500).send({
+      status: "error",
+      message: "Unexpected error",
+      details: err.message,
+    });
+  } else {
+    res.status(500).send({
+      status: "error",
+      message: "Unexpected error",
+      details: "Internal server error",
+    });
   }
 }
