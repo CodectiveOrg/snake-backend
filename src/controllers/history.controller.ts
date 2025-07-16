@@ -2,28 +2,37 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { DatabaseService } from "../services/database.service";
 import { History } from "../entities/history";
+import { User } from "../entities/user";
 
 export class HistoryController {
   private historyRepo;
+  private userRepo;
 
   public constructor(private databaseService: DatabaseService) {
     this.historyRepo = databaseService.dataSource.getRepository(History);
+    this.userRepo = databaseService.dataSource.getRepository(User);
 
     this.createHistory = this.createHistory.bind(this);
     this.getLeaderboard = this.getLeaderboard.bind(this);
     this.getUserRank = this.getUserRank.bind(this);
+    this.getHighScore = this.getHighScore.bind(this);
   }
 
   public async createHistory(req: Request, res: Response): Promise<void> {
     try {
+      const { username } = res.locals.user;
+
       const body = CreateHistoryBodySchema.parse(req.body);
-      const { username, score } = body;
+      const { score } = body;
 
-      const history = new History();
-      history.username = username;
-      history.score = score;
+      const user = await this.userRepo.findOne({ where: { username } });
 
-      await this.historyRepo.save(history);
+      if (!user) {
+        res.status(401).send();
+        return;
+      }
+
+      await this.historyRepo.save({ score, user });
 
       res.status(201).send({
         status: "success",
@@ -89,6 +98,47 @@ export class HistoryController {
         status: "success",
         message: "User's rank fetched successfully.",
         data: records,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).send({
+          status: "error",
+          message: "Invalid input",
+          details: error.issues,
+        });
+      } else {
+        res.status(500).send({
+          status: "error",
+          message: "Unexpected error",
+          details: "Internal server error",
+        });
+      }
+    }
+  }
+
+  public async getHighScore(_: Request, res: Response): Promise<void> {
+    try {
+      const { username } = res.locals.user;
+
+      const user = await this.userRepo.findOne({ where: { username } });
+
+      if (!user) {
+        res.sendStatus(401);
+        return;
+      }
+
+      const record = await this.databaseService.dataSource
+        .createQueryBuilder()
+        .select("MAX(history.score)", "highScore")
+        .from(History, "history")
+        .where("history.userId = :userId", { userId: user.id })
+        .groupBy("history.userId")
+        .getRawOne();
+
+      res.status(200).send({
+        status: "success",
+        message: "Player's high score fetched successfully.",
+        data: record,
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
