@@ -1,6 +1,6 @@
 import { DatabaseService } from "../src/services/database.service";
 import { History } from "../src/entities/history";
-import { Setting } from "../src/entities/setting";
+import { Settings } from "../src/entities/settings";
 
 let databaseService: DatabaseService;
 
@@ -17,18 +17,18 @@ async function createHistory(body: {
   await repo.save(history);
 }
 
-async function createSetting(body: {
+async function createSettings(body: {
   username: string;
   sfx: number;
   music: number;
 }): Promise<void> {
-  const repo = databaseService.dataSource.getRepository(Setting);
-  const setting = new Setting();
-  setting.username = body.username;
-  setting.sfx = body.sfx;
-  setting.music = body.music;
+  const repo = databaseService.dataSource.getRepository(Settings);
+  const settings = new Settings();
+  settings.username = body.username;
+  settings.sfx = body.sfx;
+  settings.music = body.music;
 
-  await repo.save(setting);
+  await repo.save(settings);
 }
 
 async function seed(): Promise<void> {
@@ -41,7 +41,7 @@ async function seed(): Promise<void> {
     createHistory({ username: "BijanProgrammer", score: 4 }),
     createHistory({ username: "Mahdi", score: 815 }),
 
-    createSetting({ username: "BijanProgrammer", sfx: 1, music: 9 }),
+    createSettings({ username: "BijanProgrammer", sfx: 1, music: 9 }),
   ]);
 }
 

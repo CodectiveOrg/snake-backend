@@ -1,32 +1,32 @@
 import { Request, Response } from "express";
 import { z } from "zod";
 import { DatabaseService } from "../services/database.service";
-import { Setting } from "../entities/setting";
+import { Settings } from "../entities/settings";
 
-export class SettingController {
-  private settingRepo;
+export class SettingsController {
+  private settingsRepo;
 
   public constructor(private databaseService: DatabaseService) {
-    this.settingRepo = databaseService.dataSource.getRepository(Setting);
+    this.settingsRepo = databaseService.dataSource.getRepository(Settings);
   }
 
-  public async getUserSetting(req: Request, res: Response): Promise<void> {
+  public async getUserSettings(req: Request, res: Response): Promise<void> {
+    const { user } = res.locals;
+
     try {
-      const body = GetUserSetting.parse(req.body);
-      const { username, sfx, music } = body;
+      const body = GetUserSettings.parse(req.body);
+      const { sfx, music } = body;
 
-      const setting = new Setting();
-      setting.username = username;
-      setting.sfx = sfx;
-      setting.music = music;
+      const settings = new Settings();
+      settings.username = user.username;
+      settings.sfx = sfx;
+      settings.music = music;
 
-      await this.settingRepo.save(setting);
-
-      console.log("Repo:", this.settingRepo);
+      await this.settingsRepo.save(settings);
 
       res.status(201).send({
         status: "success",
-        message: "Setting returned successfully.",
+        message: "Settings returned successfully.",
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -46,7 +46,7 @@ export class SettingController {
   }
 }
 
-const GetUserSetting = z.object({
+const GetUserSettings = z.object({
   username: z.string(),
   sfx: z.number(),
   music: z.number(),
