@@ -10,11 +10,7 @@ export function generatePublicRoutes(databaseService: DatabaseService): Router {
   router.post("/history", authMiddleware, controller.createHistory);
   router.get("/leaderboard", controller.getLeaderboard);
   router.post("/rank", controller.getUserRank);
-
-  router.post(
-    "/best-score",
-    historyController.getBestScoreByUsername.bind(historyController),
-  );
+  router.get("/high-score", authMiddleware, controller.getHighScore);
 
   return router;
 }

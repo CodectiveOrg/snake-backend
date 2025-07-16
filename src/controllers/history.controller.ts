@@ -15,6 +15,7 @@ export class HistoryController {
     this.createHistory = this.createHistory.bind(this);
     this.getLeaderboard = this.getLeaderboard.bind(this);
     this.getUserRank = this.getUserRank.bind(this);
+    this.getHighScore = this.getHighScore.bind(this);
   }
 
   public async createHistory(req: Request, res: Response): Promise<void> {
@@ -88,7 +89,7 @@ export class HistoryController {
               .from(History, "history")
               .groupBy("history.username")
               .orderBy("history.score", "DESC"),
-          "t",
+          "t"
         )
         .where("t.username = :username", { username })
         .getRawMany();
@@ -115,26 +116,31 @@ export class HistoryController {
     }
   }
 
-  public async getBestScoreByUsername(
-    req: Request,
-    res: Response,
-  ): Promise<void> {
+  public async getHighScore(req: Request, res: Response): Promise<void> {
     try {
-      const body = GetBestScoreByUsernameSchema.parse(req.body);
-      const { username } = body;
-      const records = await this.databaseService.dataSource
+      const { username } = res.locals.user;
+      // const body = GetHighScoreSchema.parse(req.body);
+      // const { user } = body;
+
+      const user = await this.userRepo.findOne({ where: { username } });
+
+      if (!user) {
+        res.sendStatus(401);
+        return;
+      }
+      const record = await this.databaseService.dataSource
         .createQueryBuilder()
         .select("history.username", "username")
-        .addSelect("MAX(history.score)", "maxScore")
+        .addSelect("MAX(history.score)", "highScore")
         .from(History, "history")
-        .where("username = :username", { username })
+        .where("history.username = :user", { username })
         .groupBy("history.username")
         .getRawOne();
 
       res.status(200).send({
         status: "success",
-        message: "Player's scores fetched successfully.",
-        data: records,
+        message: "Player's high score fetched successfully.",
+        data: record,
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -163,6 +169,6 @@ const GetUserRankBodySchema = z.object({
   username: z.string(),
 });
 
-const GetBestScoreByUsernameSchema = z.object({
+const GetHighScoreSchema = z.object({
   username: z.string(),
 });
