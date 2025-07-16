@@ -116,11 +116,9 @@ export class HistoryController {
     }
   }
 
-  public async getHighScore(req: Request, res: Response): Promise<void> {
+  public async getHighScore(_: Request, res: Response): Promise<void> {
     try {
       const { username } = res.locals.user;
-      // const body = GetHighScoreSchema.parse(req.body);
-      // const { user } = body;
 
       const user = await this.userRepo.findOne({ where: { username } });
 
@@ -128,13 +126,13 @@ export class HistoryController {
         res.sendStatus(401);
         return;
       }
+
       const record = await this.databaseService.dataSource
         .createQueryBuilder()
-        .select("history.username", "username")
-        .addSelect("MAX(history.score)", "highScore")
+        .select("MAX(history.score)", "highScore")
         .from(History, "history")
-        .where("history.username = :user", { username })
-        .groupBy("history.username")
+        .where("history.userId = :userId", { userId: user.id })
+        .groupBy("history.userId")
         .getRawOne();
 
       res.status(200).send({
@@ -166,9 +164,5 @@ const CreateHistoryBodySchema = z.object({
 });
 
 const GetUserRankBodySchema = z.object({
-  username: z.string(),
-});
-
-const GetHighScoreSchema = z.object({
   username: z.string(),
 });
