@@ -16,8 +16,10 @@ export class HistoryController {
 
   public async createHistory(req: Request, res: Response): Promise<void> {
     try {
+      const { username } = res.locals.user;
+
       const body = CreateHistoryBodySchema.parse(req.body);
-      const { username, score } = body;
+      const { score } = body;
 
       const history = new History();
       history.username = username;
