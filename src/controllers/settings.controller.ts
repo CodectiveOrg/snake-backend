@@ -13,6 +13,11 @@ export class SettingsController {
   public async getUserSettings(req: Request, res: Response): Promise<void> {
     const { user } = res.locals;
 
+    if (!user) {
+      res.sendStatus(401);
+      return;
+    }
+
     try {
       const body = GetUserSettings.parse(req.body);
       const { sfx, music } = body;
