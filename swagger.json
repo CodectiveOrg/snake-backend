@@ -135,6 +135,102 @@
           }
         }
       }
+    },
+    "/api/auth/sign-in": {
+      "post": {
+        "summary": "Signing in with username and password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInInfo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Username or password is incorrect.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "500": {
+              "description": "Unexpected error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/sign-up": {
+      "post": {
+        "summary": "Signing up with username, email and password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpInfo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Username or email is already taken.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/sign-out": {
+      "delete": {
+        "summary": "Signing out",
+        "responses": {}
+      }
+    },
+    "/api/auth/verify": {
+      "get": {
+        "summary": "User Verification",
+        "responses": {}
+      }
     }
   },
   "components": {
@@ -295,6 +391,38 @@
           }
         },
         "required": ["status", "message"]
+      },
+      "SignInInfo": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "bijanprogrammer"
+          },
+          "password": {
+            "type": "string",
+            "example": "1001"
+          }
+        },
+        "required": ["username", "password"]
+      },
+      "SignUpInfo": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "bijanprogrammer"
+          },
+          "email": {
+            "type": "string",
+            "example": "bijanprogrammer@codectiveorg.ir"
+          },
+          "password": {
+            "type": "string",
+            "example": "1001"
+          }
+        },
+        "required": ["username", "email", "password"]
       }
     }
   }

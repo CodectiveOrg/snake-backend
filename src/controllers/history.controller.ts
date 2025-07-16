@@ -2,12 +2,15 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { DatabaseService } from "../services/database.service";
 import { History } from "../entities/history";
+import { User } from "../entities/user";
 
 export class HistoryController {
   private historyRepo;
+  private userRepo;
 
   public constructor(private databaseService: DatabaseService) {
     this.historyRepo = databaseService.dataSource.getRepository(History);
+    this.userRepo = databaseService.dataSource.getRepository(User);
 
     this.createHistory = this.createHistory.bind(this);
     this.getLeaderboard = this.getLeaderboard.bind(this);
@@ -16,14 +19,19 @@ export class HistoryController {
 
   public async createHistory(req: Request, res: Response): Promise<void> {
     try {
+      const { username } = res.locals.user;
+
       const body = CreateHistoryBodySchema.parse(req.body);
-      const { username, score } = body;
+      const { score } = body;
 
-      const history = new History();
-      history.username = username;
-      history.score = score;
+      const user = await this.userRepo.findOne({ where: { username } });
 
-      await this.historyRepo.save(history);
+      if (!user) {
+        res.status(401).send();
+        return;
+      }
+
+      await this.historyRepo.save({ score, user });
 
       res.status(201).send({
         status: "success",

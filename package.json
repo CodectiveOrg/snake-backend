@@ -7,7 +7,7 @@
     "prebuild": "rimraf dist/",
     "build": "tsc",
     "preview": "node dist/app.js",
-    "seed": "tsx database/seed.ts"
+    "seed": "tsx database/seed/index.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
