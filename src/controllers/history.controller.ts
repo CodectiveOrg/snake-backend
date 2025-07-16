@@ -89,7 +89,7 @@ export class HistoryController {
               .from(History, "history")
               .groupBy("history.username")
               .orderBy("history.score", "DESC"),
-          "t"
+          "t",
         )
         .where("t.username = :username", { username })
         .getRawMany();
