@@ -9,9 +9,6 @@ export class History {
   @Column("int")
   public score!: number;
 
-  @Column("text")
-  public username!: string;
-
   @ManyToOne(() => User, (user) => user.histories)
   public user!: User;
 }
