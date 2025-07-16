@@ -3,22 +3,22 @@ import { User } from "../../src/entities/user";
 export const USERS: Omit<User, "id" | "histories">[] = [
   {
     username: "BijanProgrammer",
-    email: "bijanprogrammer@gmail.com",
+    email: "bijan@gmail.com",
     password: "1234",
   },
   {
-    username: "Ali",
-    email: "ali@gmail.com",
+    username: "ZahraZare",
+    email: "zahrazare@gmail.com",
     password: "1234",
   },
   {
-    username: "Reza",
-    email: "reza@gmail.com",
+    username: "mazaherireza",
+    email: "mazaherireza@gmail.com",
     password: "1234",
   },
   {
-    username: "Mahdi",
-    email: "mahdi@gmail.com",
+    username: "Ali.M",
+    email: "mohammad.ali@gmail.com",
     password: "1234",
   },
 ] as const;
