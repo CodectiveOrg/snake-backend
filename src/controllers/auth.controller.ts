@@ -22,85 +22,47 @@ export class AuthController {
   }
 
   public async signUp(req: Request, res: Response): Promise<void> {
-    try {
-      const body = SignUpBodySchema.parse(req.body);
-      const { username, email, password } = body;
+    const body = SignUpBodySchema.parse(req.body);
+    const { username, email, password } = body;
 
-      const user = await this.userRepo.findOne({
-        where: [{ username }, { email }],
-      });
+    const user = await this.userRepo.findOne({
+      where: [{ username }, { email }],
+    });
 
-      if (user) {
-        res.status(400).json({ error: "Username or email is already taken." });
-        return;
-      }
-
-      const hashedPassword = await hashPassword(password);
-      await this.userRepo.save({ ...body, password: hashedPassword });
-
-      generateToken(res, mapToTokenPayload(body));
-
-      res.json({ message: "Signed up successfully." });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).send({
-          status: "error",
-          message: "Invalid input",
-          details: error.issues,
-        });
-      } else if (error instanceof Error) {
-        console.error(error);
-        res.status(500).send({
-          message: "Unexpected error",
-          error: error.message,
-        });
-      } else {
-        console.error(error);
-        res.status(500).send({
-          message: "Unexpected error",
-          error: "Unknown error",
-        });
-      }
+    if (user) {
+      res.status(400).json({ error: "Username or email is already taken." });
+      return;
     }
+
+    const hashedPassword = await hashPassword(password);
+    await this.userRepo.save({ ...body, password: hashedPassword });
+
+    generateToken(res, mapToTokenPayload(body));
+
+    res.json({ message: "Signed up successfully." });
   }
 
   public async signIn(req: Request, res: Response): Promise<void> {
-    try {
-      const body = SignInBodySchema.parse(req.body);
-      const { username, password } = body;
+    const body = SignInBodySchema.parse(req.body);
+    const { username, password } = body;
 
-      const user = await this.userRepo.findOne({ where: { username } });
+    const user = await this.userRepo.findOne({ where: { username } });
 
-      if (!user) {
-        res.status(401).json({ error: "Username or password is incorrect." });
-        return;
-      }
-
-      const isPasswordCorrect = await comparePasswords(password, user.password);
-
-      if (!isPasswordCorrect) {
-        res.status(401).json({ error: "Username or password is incorrect." });
-        return;
-      }
-
-      generateToken(res, mapToTokenPayload(user));
-
-      res.json({ message: "Signed in successfully." });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).send({
-          status: "error",
-          message: "Invalid input",
-          details: error.issues,
-        });
-      } else {
-        res.status(500).send({
-          status: "error",
-          message: "Unexpected error",
-          details: "Internal server error",
-        });
-      }
+    if (!user) {
+      res.status(401).json({ error: "Username or password is incorrect." });
+      return;
     }
+
+    const isPasswordCorrect = await comparePasswords(password, user.password);
+
+    if (!isPasswordCorrect) {
+      res.status(401).json({ error: "Username or password is incorrect." });
+      return;
+    }
+
+    generateToken(res, mapToTokenPayload(user));
+
+    res.json({ message: "Signed in successfully." });
   }
 
   public async signOut(_: Request, res: Response): Promise<void> {
