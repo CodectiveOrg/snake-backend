@@ -8,8 +8,6 @@ export async function globalErrorHandler(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction,
 ): Promise<void> {
-  console.log("here");
-
   if (err instanceof z.ZodError) {
     res.status(400).send({
       status: "error",
