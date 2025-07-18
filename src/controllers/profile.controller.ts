@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { DatabaseService } from "../services/database.service";
 import { User } from "../entities/user";
-import { z } from "zod";
 
 export class ProfileController {
   private profileRepo;
