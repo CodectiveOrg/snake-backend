@@ -12,10 +12,10 @@ export class UserController {
   }
 
   public async getUser(req: Request, res: Response): Promise<void> {
-    const userName = req.params.userName;
+    const username = req.params.username;
 
     const user = await this.userRepo.findOne({
-      where: { username: userName },
+      where: { username: username },
       select: { username: true, email: true },
     });
 

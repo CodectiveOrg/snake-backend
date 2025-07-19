@@ -136,13 +136,13 @@
         }
       }
     },
-    "/api/{userName}": {
+    "/api/{username}": {
       "get": {
         "summary": "Get public user's info",
         "parameters": [
           {
             "in": "path",
-            "name": "userName",
+            "name": "username",
             "schema": {
               "type": "string"
             },
