@@ -11,4 +11,7 @@ export class History {
 
   @ManyToOne(() => User, (user) => user.histories)
   public user!: User;
+
+  @Column({ type: "datetimeoffset", default: () => "SYSDATETIMEOFFSET()" })
+  public submitted_at!: Date;
 }
