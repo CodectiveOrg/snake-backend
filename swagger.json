@@ -232,7 +232,7 @@
         "responses": {}
       }
     },
-    "/api/profile/edit-profile": {
+    "/api/profile": {
       "patch": {
         "summary": "Edit profile information",
         "requestBody": {
@@ -247,11 +247,11 @@
         },
         "responses": {
           "201": {
-            "description": "Profile editted successfully",
+            "description": "Profile edited successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/"
+                  "$ref": "#/components/schemas/EditProfileResponse"
                 }
               }
             }
