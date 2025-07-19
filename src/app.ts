@@ -13,7 +13,6 @@ import { generatePublicRoutes } from "./routes/public.route";
 import { generateAuthRoutes } from "./routes/auth.route";
 import { generateProfileRoutes } from "./routes/profile.route";
 import { globalErrorHandler } from "./utils/api.utils";
-import { generatePictureRoutes } from "./routes/picture.route";
 
 const PORT = process.env.PORT || 5000;
 
@@ -35,7 +34,6 @@ async function main(): Promise<void> {
   app.use("/api", generatePublicRoutes(databaseService));
   app.use("/api/auth", generateAuthRoutes(databaseService));
   app.use("/api/profile", generateProfileRoutes(databaseService));
-  app.use("/api/picture", generatePictureRoutes(databaseService));
   app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
   app.use(globalErrorHandler);
