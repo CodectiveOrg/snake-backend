@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { DatabaseService } from "../services/database.service";
 import { User } from "../entities/user";
 import { z } from "zod";
+import { assignDefinedValues } from "../utils/object.utils";
 
 export class ProfileController {
   private profileRepo;
@@ -42,33 +43,15 @@ export class ProfileController {
 
     const body = EditProfileSchema.parse(req.body);
 
-    const user = await this.userRepo.findOne({
-      where: { username },
-      select: { username: true },
-    });
+    const user = await this.userRepo.findOne({ where: { username } });
 
     if (!user) {
       res.sendStatus(401);
       return;
     }
 
-    let record = await this.userRepo.findOne({ where: { username } });
-
-    if (!record) {
-      res.status(401).json({
-        error: "Username not found.",
-      });
-      return;
-    }
-
-    record = {
-      ...record,
-      username: body.username ?? record?.username,
-      password: body.password ?? record?.password,
-      email: body.email ?? record?.email,
-    };
-
-    await this.userRepo.save(record);
+    const updatedUser = assignDefinedValues(user, body);
+    await this.userRepo.save(updatedUser);
 
     res.send({
       status: "success",
@@ -79,6 +62,6 @@ export class ProfileController {
 
 const EditProfileSchema = z.object({
   username: z.string().optional(),
-  email: z.string().optional(),
+  email: z.string().email().optional(),
   password: z.string().optional(),
 });
