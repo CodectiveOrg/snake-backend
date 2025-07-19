@@ -136,9 +136,9 @@
         }
       }
     },
-    "/api/{username}": {
+    "/api/user/{username}": {
       "get": {
-        "summary": "Get public user's info",
+        "summary": "Get user's public info",
         "parameters": [
           {
             "in": "path",
@@ -156,7 +156,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
+                  "$ref": "#/components/schemas/UserPublicInfoResponse"
                 }
               }
             }
@@ -166,7 +166,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/NotFoundError"
                 }
               }
             }
@@ -417,7 +417,7 @@
         },
         "required": ["status", "message", "data"]
       },
-      "UserResponse": {
+      "UserPublicInfoResponse": {
         "type": "object",
         "properties": {
           "status": {
@@ -426,7 +426,7 @@
           },
           "message": {
             "type": "string",
-            "example": "User's info fetched successfully."
+            "example": "User's public info fetched successfully."
           },
           "data": {
             "type": "object",
@@ -482,6 +482,24 @@
           "details": {
             "type": "string",
             "example": "Username is required"
+          }
+        },
+        "required": ["status", "message"]
+      },
+      "NotFoundError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "example": "Not Found"
+          },
+          "details": {
+            "type": "string",
+            "example": "User not found"
           }
         },
         "required": ["status", "message"]
