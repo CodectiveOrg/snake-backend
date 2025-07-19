@@ -168,14 +168,14 @@
                   "$ref": "#/components/schemas/Error"
                 }
               }
-            },
-            "500": {
-              "description": "Unexpected error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Error"
-                  }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
@@ -199,6 +199,53 @@
         "responses": {
           "400": {
             "description": "Username or email is already taken.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/settings": {
+      "post": {
+        "summary": "Get user's game setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSettings"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settings fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSettings"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
             "content": {
               "application/json": {
                 "schema": {
@@ -423,6 +470,24 @@
           }
         },
         "required": ["username", "email", "password"]
+      },
+      "UserSettings": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "bijanprogrammer"
+          },
+          "music": {
+            "type": "integer",
+            "example": 2
+          },
+          "sfx": {
+            "type": "integer",
+            "example": 5
+          }
+        },
+        "required": ["username", "music", "sfx"]
       }
     }
   }
