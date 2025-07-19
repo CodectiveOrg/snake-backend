@@ -28,7 +28,7 @@ export class ProfileController {
 
     const record = await this.profileRepo.findOne({
       where: { username: user.username },
-      select: { username: true, email: true },
+      select: { username: true, email: true, picture: true },
     });
 
     res.send({

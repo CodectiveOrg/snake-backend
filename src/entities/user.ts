@@ -15,6 +15,9 @@ export class User {
   @Column("text")
   public password!: string;
 
+  @Column("blob", { nullable: true })
+  public picture!: Buffer | null;
+
   @OneToMany(() => History, (history) => history.user)
   public histories!: History[];
 }
