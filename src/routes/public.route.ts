@@ -11,6 +11,7 @@ export function generatePublicRoutes(databaseService: DatabaseService): Router {
   router.get("/leaderboard", controller.getLeaderboard);
   router.post("/rank", controller.getUserRank);
   router.get("/high-score", authMiddleware, controller.getHighScore);
+  router.get("/player-history", authMiddleware, controller.getPlayerHistory);
 
   return router;
 }
