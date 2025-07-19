@@ -2,52 +2,54 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { DatabaseService } from "../services/database.service";
 import { Settings } from "../entities/settings";
+import { User } from "../entities/user";
 
 export class SettingsController {
   private settingsRepo;
 
   public constructor(private databaseService: DatabaseService) {
     this.settingsRepo = databaseService.dataSource.getRepository(Settings);
+    this.getUserSettings = this.getUserSettings.bind(this);
   }
 
   public async getUserSettings(req: Request, res: Response): Promise<void> {
-    const { user } = res.locals;
+    const { username } = res.locals.user;
+    const user = await this.databaseService.dataSource
+      .getRepository(User)
+      .findOne({ where: { username }, relations: ["settings"] });
 
     if (!user) {
       res.sendStatus(401);
       return;
     }
 
-    try {
-      const body = GetUserSettings.parse(req.body);
-      const { sfx, music } = body;
+    const result = GetUserSettings.safeParse(req.body);
 
-      const settings = new Settings();
-      settings.username = user.username;
-      settings.sfx = sfx;
-      settings.music = music;
-
-      await this.settingsRepo.save(settings);
-
-      res.status(201).send({
-        status: "success",
-        message: "Settings returned successfully.",
+    if (!result.success) {
+      res.status(400).send({
+        status: "error",
+        message: "Invalid input",
+        details: result.error.issues,
       });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).send({
-          status: "error",
-          message: "Invalid input",
-          details: error.issues,
-        });
-      } else {
-        res.status(500).send({
-          status: "error",
-          message: "Unexpected error",
-          details: "Internal server error",
-        });
-      }
+      return;
     }
+
+    const { sfx, music } = result.data;
+
+    if (!user.settings) {
+      await this.databaseService.dataSource
+        .getRepository(Settings)
+        .save({ username: user.username, sfx, music });
+    } else {
+      await this.databaseService.dataSource
+        .getRepository(Settings)
+        .save({ username: user.username, sfx, music });
+    }
+
+    res.status(201).send({
+      status: "success",
+      message: "Settings fetched successfully.",
+    });
   }
 }
 
