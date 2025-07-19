@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./user";
 
 @Entity()
 export class Settings {
@@ -10,4 +11,7 @@ export class Settings {
 
   @Column("int")
   public sfx!: number;
+
+  @OneToOne(() => User, (user) => user.settings)
+  public user!: User;
 }
