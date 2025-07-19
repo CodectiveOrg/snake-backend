@@ -17,7 +17,7 @@ export class PublicController {
     this.getUserRank = this.getUserRank.bind(this);
     this.getHighScore = this.getHighScore.bind(this);
     this.getUserPublicInfo = this.getUserPublicInfo.bind(this);
-    this.getPlayerHistory = this.getPlayerHistory.bind(this);
+    this.getUserHistory = this.getUserHistory.bind(this);
   }
 
   public async createHistory(req: Request, res: Response): Promise<void> {
@@ -131,34 +131,30 @@ export class PublicController {
     });
   }
 
-  public async getPlayerHistory(_: Request, res: Response): Promise<void> {
+  public async getUserHistory(_: Request, res: Response): Promise<void> {
     const { username } = res.locals.user;
 
     const user = await this.userRepo.findOne({ where: { username } });
 
     if (!user) {
-      res.status(401).send({ status: "error", message: "Unauthorized" });
+      res.status(401).send();
       return;
     }
 
-    const historyRecordsRaw = await this.historyRepo.find({
+    const records = await this.historyRepo.find({
       where: { user: { id: user.id } },
       order: { createdAt: "DESC" },
+      select: {
+        id: true,
+        score: true,
+        createdAt: true,
+      },
     });
-
-    // remove userId for each record
-    const historyRecords = historyRecordsRaw.map(
-      ({ id, score, createdAt }) => ({
-        id,
-        score,
-        createdAt,
-      }),
-    );
 
     res.status(200).send({
       status: "success",
-      message: "Player history fetched successfully.",
-      data: historyRecords,
+      message: "User's history fetched successfully.",
+      data: records,
     });
   }
 }
