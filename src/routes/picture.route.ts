@@ -1,4 +1,4 @@
-const multer = require("multer");
+import multer from "multer";
 import { Router } from "express";
 import { PictureController } from "../controllers/picture.controller";
 import { DatabaseService } from "../services/database.service";
@@ -12,7 +12,7 @@ export function generatePictureRoutes(
   const controller = new PictureController(databaseService);
 
   router.post(
-    "/edit",
+    "/",
     authMiddleware,
     upload.single("picture"),
     controller.editPicture,

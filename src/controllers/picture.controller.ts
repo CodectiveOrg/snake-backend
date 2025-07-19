@@ -11,7 +11,7 @@ export class PictureController {
     this.editPicture = this.editPicture.bind(this);
   }
 
-  public async editPicture(req: Request, res: Response) {
+  public async editPicture(req: Request, res: Response): Promise<void> {
     const { username } = res.locals.user;
 
     const user = await this.userRepo.findOne({ where: { username } });
@@ -24,11 +24,11 @@ export class PictureController {
     if (!req.file) {
       user.picture = null;
       await this.userRepo.save(user);
-      res.json({ message: "The picture removed" });
+      res.status(200).json({ message: "The picture removed successfully" });
     } else {
       user.picture = req.file.buffer;
       await this.userRepo.save(user);
-      res.json({ message: "The picture changed" });
+      res.status(201).json({ message: "The picture changed successfully" });
     }
   }
 }
