@@ -1,18 +1,15 @@
 import { Request, Response } from "express";
 import { DatabaseService } from "../services/database.service";
 import { User } from "../entities/user";
-import { Settings } from "../entities/settings";
 import { z } from "zod";
 
 export class ProfileController {
   private profileRepo;
   private userRepo;
-  private settingsRepo;
 
   public constructor(databaseService: DatabaseService) {
     this.profileRepo = databaseService.dataSource.getRepository(User);
     this.userRepo = databaseService.dataSource.getRepository(User);
-    this.settingsRepo = databaseService.dataSource.getRepository(Settings);
 
     this.getProfile = this.getProfile.bind(this);
     this.editProfile = this.editProfile.bind(this);
@@ -43,7 +40,7 @@ export class ProfileController {
   public async editProfile(req: Request, res: Response): Promise<void> {
     const { username } = res.locals.user;
 
-    const body = editProfileSchema.parse(req.body);
+    const body = EditProfileSchema.parse(req.body);
 
     const user = await this.userRepo.findOne({
       where: { username },
@@ -71,7 +68,7 @@ export class ProfileController {
       email: body.email ?? record?.email,
     };
 
-    await this.settingsRepo.save(record);
+    await this.userRepo.save(record);
 
     res.send({
       status: "success",
@@ -80,7 +77,7 @@ export class ProfileController {
   }
 }
 
-const editProfileSchema = z.object({
+const EditProfileSchema = z.object({
   username: z.string().optional(),
   email: z.string().optional(),
   password: z.string().optional(),
