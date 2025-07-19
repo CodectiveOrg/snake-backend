@@ -267,7 +267,7 @@
             "example": "2025-07-19T15:30:00Z"
           }
         },
-        "required": ["status", "message", "createdAt"]
+        "required": ["status", "message"]
       },
       "UserRankRequest": {
         "type": "object",
