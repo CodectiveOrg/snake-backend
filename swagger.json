@@ -306,6 +306,12 @@
           "message": {
             "type": "string",
             "example": "History created successfully"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "History record creation time",
+            "example": "2025-07-19T15:30:00Z"
           }
         },
         "required": ["status", "message"]
