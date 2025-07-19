@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+} from "typeorm";
 import { User } from "./user";
 
 @Entity()
@@ -12,6 +18,6 @@ export class History {
   @ManyToOne(() => User, (user) => user.histories)
   public user!: User;
 
-  @Column({ type: "datetimeoffset", default: () => "SYSDATETIMEOFFSET()" })
-  public submitted_at!: Date;
+  @CreateDateColumn()
+  public createdAt!: Date;
 }
