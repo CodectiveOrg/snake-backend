@@ -1,17 +1,21 @@
 import { Request, Response } from "express";
 import { DatabaseService } from "../services/database.service";
 import { User } from "../entities/user";
+import { Settings } from "../entities/settings";
 import { z } from "zod";
 
 export class ProfileController {
   private profileRepo;
   private userRepo;
+  private settingsRepo;
 
   public constructor(databaseService: DatabaseService) {
     this.profileRepo = databaseService.dataSource.getRepository(User);
     this.userRepo = databaseService.dataSource.getRepository(User);
+    this.settingsRepo = databaseService.dataSource.getRepository(Settings);
 
     this.getProfile = this.getProfile.bind(this);
+    this.editProfile = this.editProfile.bind(this);
   }
 
   public async getProfile(_: Request, res: Response): Promise<void> {
@@ -35,4 +39,49 @@ export class ProfileController {
       data: record,
     });
   }
+
+  public async editProfile(req: Request, res: Response): Promise<void> {
+    const { username } = res.locals.user;
+
+    const body = editProfileSchema.parse(req.body);
+
+    const user = await this.userRepo.findOne({
+      where: { username },
+      select: { username: true },
+    });
+
+    if (!user) {
+      res.sendStatus(401);
+      return;
+    }
+
+    let record = await this.userRepo.findOne({ where: { username } });
+
+    if (!record) {
+      res.status(401).json({
+        error: "Username not found.",
+      });
+      return;
+    }
+
+    record = {
+      ...record,
+      username: body.username ?? record?.username,
+      password: body.password ?? record?.password,
+      email: body.email ?? record?.email,
+    };
+
+    await this.settingsRepo.save(record);
+
+    res.send({
+      status: "success",
+      message: "Profile updated successfully.",
+    });
+  }
 }
+
+const editProfileSchema = z.object({
+  username: z.string().optional(),
+  email: z.string().optional(),
+  password: z.string().optional(),
+});

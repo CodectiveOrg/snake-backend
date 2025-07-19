@@ -231,6 +231,53 @@
         "summary": "User Verification",
         "responses": {}
       }
+    },
+    "/api/profile/edit-profile": {
+      "patch": {
+        "summary": "Edit profile information",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Profile editted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -423,6 +470,37 @@
           }
         },
         "required": ["username", "email", "password"]
+      },
+      "EditProfileRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "bijanprogrammer"
+          },
+          "email": {
+            "type": "string",
+            "example": "bijanprogrammer@codectiveorg.ir"
+          },
+          "password": {
+            "type": "string",
+            "example": "1001"
+          }
+        },
+        "required": []
+      },
+      "EditProfileResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Profile updated successfully."
+          }
+        }
       }
     }
   }

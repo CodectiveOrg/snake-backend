@@ -10,6 +10,7 @@ export function generateProfileRoutes(
   const controller = new ProfileController(databaseService);
 
   router.get("/", authMiddleware, controller.getProfile);
+  router.patch("/edit-profile", authMiddleware, controller.editProfile);
 
   return router;
 }

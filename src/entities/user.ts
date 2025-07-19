@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany, OneToOne } from "typeorm";
 import { History } from "./history";
+import { Settings } from "./settings";
 
 @Entity()
 export class User {
@@ -17,4 +18,7 @@ export class User {
 
   @OneToMany(() => History, (history) => history.user)
   public histories!: History[];
+
+  @OneToOne(() => Settings, (settings) => settings.user)
+  public settings!: Settings
 }
