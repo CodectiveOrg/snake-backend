@@ -136,6 +136,54 @@
         }
       }
     },
+    "/api/user/{username}": {
+      "get": {
+        "summary": "Get user's public info",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of user to return",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPublicInfoResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/sign-in": {
       "post": {
         "summary": "Signing in with username and password",
@@ -374,6 +422,12 @@
           "message": {
             "type": "string",
             "example": "History created successfully"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "History record creation time",
+            "example": "2025-07-19T15:30:00Z"
           }
         },
         "required": ["status", "message"]
@@ -408,6 +462,31 @@
           "score": {
             "type": "integer",
             "example": 450
+          }
+        },
+        "required": ["username", "score"]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "Ali"
+          },
+          "email": {
+            "type": "string",
+            "example": "Ali@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "123"
+          },
+          "picture": {
+            "example": null
+          },
+          "histories": {
+            "type": "array",
+            "example": []
           }
         },
         "required": ["username", "score"]
@@ -472,6 +551,30 @@
         },
         "required": ["status", "message", "data"]
       },
+      "UserPublicInfoResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "User's public info fetched successfully."
+          },
+          "data": {
+            "type": "object",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "example": {
+              "username": "Ali",
+              "email": "Ali@gmail.com"
+            }
+          }
+        },
+        "required": ["status", "message", "data"]
+      },
       "UserRankResponse": {
         "type": "object",
         "properties": {
@@ -513,6 +616,24 @@
           "details": {
             "type": "string",
             "example": "Username is required"
+          }
+        },
+        "required": ["status", "message"]
+      },
+      "NotFoundError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "example": "Not Found"
+          },
+          "details": {
+            "type": "string",
+            "example": "User not found"
           }
         },
         "required": ["status", "message"]
