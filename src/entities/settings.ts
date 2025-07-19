@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
-} from "typeorm";
-import { User } from "./user";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Settings {
@@ -13,12 +6,8 @@ export class Settings {
   public id!: number;
 
   @Column("int")
-  public sfx!: number;
-
-  @Column("int")
   public music!: number;
 
-  @OneToOne(() => User, { onDelete: "CASCADE" })
-  @JoinColumn()
-  public user!: User;
+  @Column("int")
+  public sfx!: number;
 }

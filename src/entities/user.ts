@@ -3,10 +3,11 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   OneToMany,
-  OneToOne,
+  // OneToOne,
+  // JoinColumn,
 } from "typeorm";
 import { History } from "./history";
-import { Settings } from "./settings";
+// import { Settings } from "./settings";
 
 @Entity()
 export class User {
@@ -22,8 +23,9 @@ export class User {
   @Column("text")
   public password!: string;
 
-  @OneToOne(() => Settings, (settings) => settings.user)
-  public settings?: Settings;
+  // @OneToOne(() => Settings, (settings) => settings.user)
+  // @JoinColumn()
+  // public settings?: Settings;
 
   @OneToMany(() => History, (history) => history.user)
   public histories!: History[];

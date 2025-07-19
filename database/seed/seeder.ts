@@ -31,10 +31,10 @@ export class Seeder {
     ]);
 
     await Promise.allSettled([
-      this.seedSettings(USERS[0].username, { sfx: 1, music: 0 }),
-      this.seedSettings(USERS[1].username, { sfx: 0, music: 1 }),
-      this.seedSettings(USERS[2].username, { sfx: 1, music: 1 }),
-      this.seedSettings(USERS[3].username, { sfx: 0, music: 0 }),
+      this.seedSettings(USERS[0].username, { music: 1, sfx: 0 }),
+      this.seedSettings(USERS[1].username, { music: 0, sfx: 1 }),
+      this.seedSettings(USERS[2].username, { music: 1, sfx: 1 }),
+      this.seedSettings(USERS[3].username, { music: 0, sfx: 0 }),
     ]);
   }
 

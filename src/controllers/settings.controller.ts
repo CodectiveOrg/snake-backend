@@ -6,45 +6,34 @@ import { User } from "../entities/user";
 
 export class SettingsController {
   private settingsRepo;
+  private userRepo;
 
   public constructor(private databaseService: DatabaseService) {
     this.settingsRepo = databaseService.dataSource.getRepository(Settings);
+
     this.getUserSettings = this.getUserSettings.bind(this);
+
+    this.userRepo = databaseService.dataSource.getRepository(User);
   }
 
   public async getUserSettings(req: Request, res: Response): Promise<void> {
-    const { username } = res.locals.user;
-    const user = await this.databaseService.dataSource
-      .getRepository(User)
-      .findOne({ where: { username }, relations: ["settings"] });
+    const result = GetUserSettings.safeParse(req.body);
 
-    if (!user) {
+    const { username } = res.locals.user;
+
+    const user = await this.userRepo.findOne({
+      where: { username },
+      relations: ["settings"],
+    });
+
+    if (!user || !result.success) {
       res.sendStatus(401);
       return;
     }
 
-    const result = GetUserSettings.safeParse(req.body);
+    const { music, sfx } = result.data;
 
-    if (!result.success) {
-      res.status(400).send({
-        status: "error",
-        message: "Invalid input",
-        details: result.error.issues,
-      });
-      return;
-    }
-
-    const { sfx, music } = result.data;
-
-    if (!user.settings) {
-      await this.databaseService.dataSource
-        .getRepository(Settings)
-        .save({ username: user.username, sfx, music });
-    } else {
-      await this.databaseService.dataSource
-        .getRepository(Settings)
-        .save({ username: user.username, sfx, music });
-    }
+    await this.settingsRepo.save({ username: user.username, music, sfx });
 
     res.status(201).send({
       status: "success",
@@ -54,7 +43,6 @@ export class SettingsController {
 }
 
 const GetUserSettings = z.object({
-  username: z.string(),
-  sfx: z.number(),
-  music: z.number(),
+  music: z.number().min(0).max(10),
+  sfx: z.number().min(0).max(10),
 });
