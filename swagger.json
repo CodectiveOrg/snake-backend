@@ -52,16 +52,16 @@
         }
       }
     },
-    "/api/player-history": {
+    "/api/history": {
       "get": {
-        "summary": "Get current player's history ordered by time",
+        "summary": "Get current users's history ordered by time",
         "responses": {
           "200": {
-            "description": "Player history fetched successfully",
+            "description": "User history fetched successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PlayerHistoryResponse"
+                  "$ref": "#/components/schemas/UserHistoryResponse"
                 }
               }
             }
@@ -667,7 +667,7 @@
           }
         }
       },
-      "PlayerHistoryResponse": {
+      "UserHistoryResponse": {
         "type": "object",
         "properties": {
           "status": {
@@ -676,18 +676,18 @@
           },
           "message": {
             "type": "string",
-            "example": "Player history fetched successfully"
+            "example": "User history fetched successfully"
           },
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/PlayerHistoryRecord"
+              "$ref": "#/components/schemas/UserHistoryRecord"
             }
           }
         },
         "required": ["status", "message", "data"]
       },
-      "PlayerHistoryRecord": {
+      "UserHistoryRecord": {
         "type": "object",
         "properties": {
           "id": {
