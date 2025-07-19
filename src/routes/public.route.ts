@@ -12,7 +12,7 @@ export function generatePublicRoutes(databaseService: DatabaseService): Router {
   router.post("/rank", publicController.getUserRank);
   router.get("/high-score", authMiddleware, publicController.getHighScore);
   router.get("/user/:username", publicController.getUserPublicInfo);
-  router.get("/player-history", publicController.getPlayerHistory);
+  router.get("/history", publicController.getUserHistory);
 
   return router;
 }
