@@ -14,6 +14,7 @@ import { generateAuthRoutes } from "./routes/auth.route";
 import { globalErrorHandler } from "./handlers/global-error.handler";
 import { generateSettingsRoutes } from "./routes/settings.route";
 import { generateProfileRoutes } from "./routes/profile.route";
+import { generateHistoryRoutes } from "./routes/history.route";
 
 const PORT = process.env.PORT || 5000;
 
@@ -33,9 +34,10 @@ async function main(): Promise<void> {
   app.use(cors({ origin: true, credentials: true }));
 
   app.use("/api", generatePublicRoutes(databaseService));
-  app.use("/api/settings", generateSettingsRoutes(databaseService));
   app.use("/api/auth", generateAuthRoutes(databaseService));
+  app.use("/api/history", generateHistoryRoutes(databaseService));
   app.use("/api/profile", generateProfileRoutes(databaseService));
+  app.use("/api/settings", generateSettingsRoutes(databaseService));
   app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
   app.use(globalErrorHandler);
