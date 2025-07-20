@@ -1,4 +1,4 @@
-import { DatabaseService } from "../../src/services/database.service";
+import { DatabaseService } from "../services/database.service";
 import { Seeder } from "./seeder";
 
 async function main(): Promise<void> {
