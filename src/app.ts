@@ -11,7 +11,7 @@ import { validateEnv } from "./utils/env.utils";
 import { DatabaseService } from "./services/database.service";
 import { generatePublicRoutes } from "./routes/public.route";
 import { generateAuthRoutes } from "./routes/auth.route";
-import { globalErrorHandler } from "./utils/api.utils";
+import { globalErrorHandler } from "./handlers/global-error.handler";
 import { generateSettingsRoutes } from "./routes/settings.route";
 import { generateProfileRoutes } from "./routes/profile.route";
 
