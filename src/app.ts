@@ -30,7 +30,7 @@ async function main(): Promise<void> {
   const app = express();
   app.use(bodyParser.json());
   app.use(cookieParser());
-  app.use(cors({ credentials: true }));
+  app.use(cors({ origin: true, credentials: true }));
 
   app.use("/api", generatePublicRoutes(databaseService));
   app.use("/api/settings", generateSettingsRoutes(databaseService));
