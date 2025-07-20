@@ -7,7 +7,7 @@
     "prebuild": "rimraf dist/",
     "build": "tsc",
     "preview": "node dist/app.js",
-    "seed": "tsx database/seed/index.ts",
+    "seed": "tsx src/seed/index.ts",
     "lint": "eslint .",
     "prettier:check": "prettier . --check",
     "prettier:fix": "prettier . --write",
@@ -15,6 +15,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",

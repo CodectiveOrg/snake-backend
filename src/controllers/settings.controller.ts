@@ -1,48 +1,48 @@
 import { Request, Response } from "express";
+
 import { z } from "zod";
-import { DatabaseService } from "../services/database.service";
-import { Settings } from "../entities/settings";
-import { User } from "../entities/user";
+
+import { SettingsEditResponseDto } from "@/dto/settings-response.dto";
+
+import { Settings } from "@/entities/settings";
+import { User } from "@/entities/user";
+
+import { DatabaseService } from "@/services/database.service";
+
+import { fetchUserFromToken } from "@/utils/api.utils";
 
 export class SettingsController {
-  private settingsRepo;
-  private userRepo;
+  private readonly settingsRepo;
+  private readonly userRepo;
 
-  public constructor(private databaseService: DatabaseService) {
+  public constructor(databaseService: DatabaseService) {
     this.settingsRepo = databaseService.dataSource.getRepository(Settings);
-
-    this.getUserSettings = this.getUserSettings.bind(this);
-
     this.userRepo = databaseService.dataSource.getRepository(User);
+
+    this.editSettings = this.editSettings.bind(this);
   }
 
-  public async getUserSettings(req: Request, res: Response): Promise<void> {
-    const result = GetUserSettings.safeParse(req.body);
+  public async editSettings(
+    req: Request,
+    res: Response<SettingsEditResponseDto>,
+  ): Promise<void> {
+    const body = EditSettingsBodySchema.parse(req.body);
+    const user = await fetchUserFromToken(res, this.userRepo);
 
-    const { username } = res.locals.user;
-
-    const user = await this.userRepo.findOne({
-      where: { username },
-      relations: ["settings"],
+    await this.settingsRepo.save({
+      music: body.music,
+      sfx: body.sfx,
+      user: user,
     });
 
-    if (!user || !result.success) {
-      res.sendStatus(401);
-      return;
-    }
-
-    const { music, sfx } = result.data;
-
-    await this.settingsRepo.save({ username: user.username, music, sfx });
-
-    res.status(201).send({
-      status: "success",
+    res.status(200).send({
+      statusCode: 200,
       message: "Settings fetched successfully.",
     });
   }
 }
 
-const GetUserSettings = z.object({
+const EditSettingsBodySchema = z.object({
   music: z.number().min(0).max(10),
   sfx: z.number().min(0).max(10),
 });

@@ -1,13 +1,14 @@
 import {
   Column,
   Entity,
-  PrimaryGeneratedColumn,
+  JoinColumn,
   OneToMany,
   OneToOne,
-  JoinColumn,
+  PrimaryGeneratedColumn,
 } from "typeorm";
-import { History } from "./history";
-import { Settings } from "./settings";
+
+import { History } from "@/entities/history";
+import { Settings } from "@/entities/settings";
 
 @Entity()
 export class User {

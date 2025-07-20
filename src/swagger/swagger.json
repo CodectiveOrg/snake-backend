@@ -50,9 +50,7 @@
             }
           }
         }
-      }
-    },
-    "/api/history": {
+      },
       "get": {
         "summary": "Get current users's history ordered by time",
         "responses": {

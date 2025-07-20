@@ -1,1 +1,28 @@
-{}
+{
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^(express|body-parser|cookie-parser|cors)(/(.*))?$",
+    "^swagger-ui-express(/(.*))?$",
+    "^typeorm(/(.*))?$",
+    "^multer(/(.*))?$",
+    "^(jsonwebtoken|bcrypt)(/(.*))?$",
+    "^zod(/(.*))?$",
+    "^(reflect-metadata|dotenv)(/(.*))?$",
+    "<THIRD_PARTY_MODULES>",
+    "^@/controllers",
+    "^@/dto",
+    "^@/entities",
+    "^@/handlers",
+    "^@/middlewares",
+    "^@/routes",
+    "^@/seed",
+    "^@/services",
+    "^@/types",
+    "^@/utils",
+    "^(\\.|\\.\\.)/.*$"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderGroupNamespaceSpecifiers": true,
+  "importOrderParserPlugins": ["typescript", "decorators"]
+}

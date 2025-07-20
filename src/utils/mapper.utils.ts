@@ -1,8 +1,9 @@
-import { TokenPayload } from "../types/token-payload";
-import { pick } from "./type.utils";
+import { TokenPayloadType } from "@/types/token-payload.type";
 
-export function mapToTokenPayload<T extends TokenPayload>(
+import { pick } from "@/utils/type.utils";
+
+export function mapToTokenPayload<T extends TokenPayloadType>(
   obj: T,
-): TokenPayload {
+): TokenPayloadType {
   return pick(obj, ["username", "email"]);
 }

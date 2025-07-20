@@ -1,16 +1,27 @@
 import { Request, Response } from "express";
+
 import { z } from "zod";
-import { DatabaseService } from "../services/database.service";
-import { User } from "../entities/user";
+
+import {
+  AuthSignInResponseDto,
+  AuthSignOutResponseDto,
+  AuthSignUpResponseDto,
+  AuthVerifyResponseDto,
+} from "@/dto/auth-response.dto";
+
+import { User } from "@/entities/user";
+
+import { DatabaseService } from "@/services/database.service";
+
 import {
   comparePasswords,
   generateToken,
   hashPassword,
-} from "../utils/auth.utils";
-import { mapToTokenPayload } from "../utils/mapper.utils";
+} from "@/utils/auth.utils";
+import { mapToTokenPayload } from "@/utils/mapper.utils";
 
 export class AuthController {
-  private userRepo;
+  private readonly userRepo;
 
   public constructor(databaseService: DatabaseService) {
     this.userRepo = databaseService.dataSource.getRepository(User);
@@ -21,7 +32,10 @@ export class AuthController {
     this.verify = this.verify.bind(this);
   }
 
-  public async signUp(req: Request, res: Response): Promise<void> {
+  public async signUp(
+    req: Request,
+    res: Response<AuthSignUpResponseDto>,
+  ): Promise<void> {
     const body = SignUpBodySchema.parse(req.body);
     const { username, email, password } = body;
 
@@ -30,7 +44,12 @@ export class AuthController {
     });
 
     if (user) {
-      res.status(400).json({ error: "Username or email is already taken." });
+      res.status(409).json({
+        statusCode: 409,
+        message: "Username or email is already taken.",
+        error: "Conflict",
+      });
+
       return;
     }
 
@@ -39,38 +58,67 @@ export class AuthController {
 
     generateToken(res, mapToTokenPayload(body));
 
-    res.json({ message: "Signed up successfully." });
+    res.status(201).json({
+      statusCode: 201,
+      message: "Signed up successfully.",
+    });
   }
 
-  public async signIn(req: Request, res: Response): Promise<void> {
+  public async signIn(
+    req: Request,
+    res: Response<AuthSignInResponseDto>,
+  ): Promise<void> {
     const body = SignInBodySchema.parse(req.body);
     const { username, password } = body;
 
     const user = await this.userRepo.findOne({ where: { username } });
 
     if (!user) {
-      res.status(401).json({ error: "Username or password is incorrect." });
+      res.status(401).json({
+        statusCode: 401,
+        message: "Username or password is incorrect.",
+        error: "Unauthorized",
+      });
+
       return;
     }
 
     const isPasswordCorrect = await comparePasswords(password, user.password);
 
     if (!isPasswordCorrect) {
-      res.status(401).json({ error: "Username or password is incorrect." });
+      res.status(401).json({
+        statusCode: 401,
+        message: "Username or password is incorrect.",
+        error: "Unauthorized",
+      });
+
       return;
     }
 
     generateToken(res, mapToTokenPayload(user));
 
-    res.json({ message: "Signed in successfully." });
+    res.json({
+      statusCode: 200,
+      message: "Signed in successfully.",
+    });
   }
 
-  public async signOut(_: Request, res: Response): Promise<void> {
+  public async signOut(
+    _: Request,
+    res: Response<AuthSignOutResponseDto>,
+  ): Promise<void> {
     res.clearCookie(process.env.TOKEN_KEY!);
-    res.json({ message: "Signed out successfully." });
+
+    res.json({
+      statusCode: 200,
+      message: "Signed out successfully.",
+    });
   }
 
-  public async verify(_: Request, res: Response): Promise<void> {
+  public async verify(
+    _: Request,
+    res: Response<AuthVerifyResponseDto>,
+  ): Promise<void> {
     const { user } = res.locals;
 
     if (!user) {
@@ -78,7 +126,11 @@ export class AuthController {
       return;
     }
 
-    res.json({ user });
+    res.json({
+      statusCode: 200,
+      message: "Token is valid.",
+      result: user,
+    });
   }
 }
 
