@@ -23,10 +23,13 @@ export class User {
   @Column("text")
   public password!: string;
 
-  @OneToOne(() => Settings, (settings) => settings.user)
-  @JoinColumn()
-  public settings?: Settings;
+  @Column("blob", { nullable: true })
+  public picture!: Buffer | null;
 
   @OneToMany(() => History, (history) => history.user)
   public histories!: History[];
+
+  @OneToOne(() => Settings, (settings) => settings.user)
+  @JoinColumn()
+  public settings?: Settings;
 }

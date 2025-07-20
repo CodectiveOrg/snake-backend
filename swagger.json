@@ -52,6 +52,53 @@
         }
       }
     },
+    "/api/history": {
+      "get": {
+        "summary": "Get current users's history ordered by time",
+        "responses": {
+          "200": {
+            "description": "User history fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/leaderboard": {
       "get": {
         "summary": "Get top 5 users with highest scores",
@@ -119,6 +166,54 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/{username}": {
+      "get": {
+        "summary": "Get user's public info",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of user to return",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPublicInfoResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
                 }
               }
             }
@@ -278,6 +373,110 @@
         "summary": "User Verification",
         "responses": {}
       }
+    },
+    "/api/profile": {
+      "patch": {
+        "summary": "Edit profile information",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditProfileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Profile edited successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile/picture": {
+      "post": {
+        "summary": "Edit user picture",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/EditPictureRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The picture removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditPictureResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "The picture changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditPictureResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -296,6 +495,17 @@
         },
         "required": ["username", "score"]
       },
+      "EditPictureRequest": {
+        "type": "object",
+        "properties": {
+          "picture": {
+            "type": "string",
+            "description": "Edit picture",
+            "format": "binary"
+          }
+        },
+        "required": []
+      },
       "CreateHistoryResponse": {
         "type": "object",
         "properties": {
@@ -306,9 +516,25 @@
           "message": {
             "type": "string",
             "example": "History created successfully"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "History record creation time",
+            "example": "2025-07-19T15:30:00Z"
           }
         },
         "required": ["status", "message"]
+      },
+      "EditPictureResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The picture changed successfully"
+          }
+        },
+        "required": ["message"]
       },
       "UserRankRequest": {
         "type": "object",
@@ -330,6 +556,31 @@
           "score": {
             "type": "integer",
             "example": 450
+          }
+        },
+        "required": ["username", "score"]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "Ali"
+          },
+          "email": {
+            "type": "string",
+            "example": "Ali@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "123"
+          },
+          "picture": {
+            "example": null
+          },
+          "histories": {
+            "type": "array",
+            "example": []
           }
         },
         "required": ["username", "score"]
@@ -394,6 +645,30 @@
         },
         "required": ["status", "message", "data"]
       },
+      "UserPublicInfoResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "User's public info fetched successfully."
+          },
+          "data": {
+            "type": "object",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "example": {
+              "username": "Ali",
+              "email": "Ali@gmail.com"
+            }
+          }
+        },
+        "required": ["status", "message", "data"]
+      },
       "UserRankResponse": {
         "type": "object",
         "properties": {
@@ -439,6 +714,24 @@
         },
         "required": ["status", "message"]
       },
+      "NotFoundError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "example": "Not Found"
+          },
+          "details": {
+            "type": "string",
+            "example": "User not found"
+          }
+        },
+        "required": ["status", "message"]
+      },
       "SignInInfo": {
         "type": "object",
         "properties": {
@@ -470,6 +763,76 @@
           }
         },
         "required": ["username", "email", "password"]
+      },
+      "EditProfileRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "bijanprogrammer"
+          },
+          "email": {
+            "type": "string",
+            "example": "bijanprogrammer@codectiveorg.ir"
+          },
+          "password": {
+            "type": "string",
+            "example": "1001"
+          }
+        },
+        "required": []
+      },
+      "EditProfileResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Profile updated successfully."
+          }
+        }
+      },
+      "UserHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "User history fetched successfully"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserHistoryRecord"
+            }
+          }
+        },
+        "required": ["status", "message", "data"]
+      },
+      "UserHistoryRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "score": {
+            "type": "integer",
+            "example": 450
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-07-19T16:08:00Z"
+          }
+        },
+        "required": ["id", "score", "createdAt"]
       },
       "UserSettings": {
         "type": "object",
