@@ -36,3 +36,5 @@ export type GetUserPublicInfoResponseDto = ResponseDto<
 export type GetUserHistoryResponseDto = ResponseDto<
   { score: number; createdAt: Date }[]
 >;
+
+export type SettingsGetResponseDto = ResponseDto;

@@ -9,7 +9,7 @@ export function generateSettingsRoutes(
   const router = Router();
   const controller = new SettingsController(databaseService);
 
-  router.post("/", authMiddleware, controller.getUserSettings);
+  router.post("/", authMiddleware, controller.getSettings);
 
   return router;
 }
