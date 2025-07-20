@@ -1,15 +1,20 @@
 import { Request, Response } from "express";
+
 import { z } from "zod";
-import { DatabaseService } from "../services/database.service";
-import { History } from "../entities/history";
-import { User } from "../entities/user";
-import { fetchUserFromToken } from "../utils/api.utils";
+
 import {
   HistoryCreateHistoryResponseDto,
   HistoryGetHighScoreResponseDto,
   HistoryGetUserHistoryResponseDto,
   HistoryGetUserRankResponseDto,
-} from "../dto/history-response.dto";
+} from "@/dto/history-response.dto";
+
+import { History } from "@/entities/history";
+import { User } from "@/entities/user";
+
+import { DatabaseService } from "@/services/database.service";
+
+import { fetchUserFromToken } from "@/utils/api.utils";
 
 export class HistoryController {
   private readonly historyRepo;

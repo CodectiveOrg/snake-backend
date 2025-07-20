@@ -1,5 +1,6 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user";
+
+import { User } from "@/entities/user";
 
 @Entity()
 export class Settings {

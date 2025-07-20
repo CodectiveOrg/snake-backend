@@ -1,10 +1,13 @@
 import { Repository } from "typeorm";
 
-import { History } from "../entities/history";
-import { Settings } from "../entities/settings";
-import { User } from "../entities/user";
-import { DatabaseService } from "../services/database.service";
-import { hashPassword } from "../utils/auth.utils";
+import { History } from "@/entities/history";
+import { Settings } from "@/entities/settings";
+import { User } from "@/entities/user";
+
+import { DatabaseService } from "@/services/database.service";
+
+import { hashPassword } from "@/utils/auth.utils";
+
 import { USERS } from "./users";
 
 export class Seeder {

@@ -1,8 +1,12 @@
-import multer from "multer";
 import { Router } from "express";
-import { ProfileController } from "../controllers/profile.controller";
-import { DatabaseService } from "../services/database.service";
-import { authMiddleware } from "../middlewares/auth.middleware";
+
+import multer from "multer";
+
+import { ProfileController } from "@/controllers/profile.controller";
+
+import { authMiddleware } from "@/middlewares/auth.middleware";
+
+import { DatabaseService } from "@/services/database.service";
 
 export function generateProfileRoutes(
   databaseService: DatabaseService,

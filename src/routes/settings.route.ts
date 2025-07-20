@@ -1,7 +1,10 @@
 import { Router } from "express";
-import { DatabaseService } from "../services/database.service";
-import { SettingsController } from "../controllers/settings.controller";
-import { authMiddleware } from "../middlewares/auth.middleware";
+
+import { SettingsController } from "@/controllers/settings.controller";
+
+import { authMiddleware } from "@/middlewares/auth.middleware";
+
+import { DatabaseService } from "@/services/database.service";
 
 export function generateSettingsRoutes(
   databaseService: DatabaseService,

@@ -1,5 +1,6 @@
-import { User } from "../entities/user";
-import { ResponseDto } from "./response.dto";
+import { ResponseDto } from "@/dto/response.dto";
+
+import { User } from "@/entities/user";
 
 export type ProfileGetResponseDto = ResponseDto<
   Pick<User, "username" | "email" | "picture">

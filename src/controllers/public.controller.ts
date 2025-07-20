@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
+
 import { z } from "zod";
-import { DatabaseService } from "../services/database.service";
-import { History } from "../entities/history";
-import { User } from "../entities/user";
+
 import {
   PublicGetLeaderboardResponseDto,
   PublicGetUserPublicInfoResponseDto,
-} from "../dto/public-response.dto";
+} from "@/dto/public-response.dto";
+
+import { History } from "@/entities/history";
+import { User } from "@/entities/user";
+
+import { DatabaseService } from "@/services/database.service";
 
 export class PublicController {
   private readonly historyRepo;

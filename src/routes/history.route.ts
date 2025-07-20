@@ -1,7 +1,10 @@
 import { Router } from "express";
-import { DatabaseService } from "../services/database.service";
-import { authMiddleware } from "../middlewares/auth.middleware";
-import { HistoryController } from "../controllers/history.controller";
+
+import { HistoryController } from "@/controllers/history.controller";
+
+import { authMiddleware } from "@/middlewares/auth.middleware";
+
+import { DatabaseService } from "@/services/database.service";
 
 export function generateHistoryRoutes(
   databaseService: DatabaseService,

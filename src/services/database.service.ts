@@ -1,7 +1,8 @@
 import { DataSource } from "typeorm";
-import { User } from "../entities/user";
-import { History } from "../entities/history";
-import { Settings } from "../entities/settings";
+
+import { History } from "@/entities/history";
+import { Settings } from "@/entities/settings";
+import { User } from "@/entities/user";
 
 export class DatabaseService {
   public dataSource: DataSource;

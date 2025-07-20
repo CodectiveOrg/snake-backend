@@ -1,5 +1,6 @@
-import { TokenPayload } from "../types/token-payload";
-import { ResponseDto } from "./response.dto";
+import { ResponseDto } from "@/dto/response.dto";
+
+import { TokenPayload } from "@/types/token-payload";
 
 export type AuthSignUpResponseDto = ResponseDto;
 

@@ -1,11 +1,12 @@
 import {
   Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
   CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from "typeorm";
-import { User } from "./user";
+
+import { User } from "@/entities/user";
 
 @Entity()
 export class History {

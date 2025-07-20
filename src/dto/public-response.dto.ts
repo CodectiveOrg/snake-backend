@@ -1,5 +1,6 @@
-import { User } from "../entities/user";
-import { ResponseDto } from "./response.dto";
+import { ResponseDto } from "@/dto/response.dto";
+
+import { User } from "@/entities/user";
 
 export type PublicGetLeaderboardResponseDto = ResponseDto<
   { username: string; rank: number }[]

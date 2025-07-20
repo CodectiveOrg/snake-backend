@@ -1,7 +1,10 @@
 import { Router } from "express";
-import { DatabaseService } from "../services/database.service";
-import { authMiddleware } from "../middlewares/auth.middleware";
-import { AuthController } from "../controllers/auth.controller";
+
+import { AuthController } from "@/controllers/auth.controller";
+
+import { authMiddleware } from "@/middlewares/auth.middleware";
+
+import { DatabaseService } from "@/services/database.service";
 
 export function generateAuthRoutes(databaseService: DatabaseService): Router {
   const router = Router();

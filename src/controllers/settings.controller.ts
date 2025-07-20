@@ -1,10 +1,15 @@
 import { Request, Response } from "express";
+
 import { z } from "zod";
-import { DatabaseService } from "../services/database.service";
-import { Settings } from "../entities/settings";
-import { User } from "../entities/user";
-import { fetchUserFromToken } from "../utils/api.utils";
-import { SettingsEditResponseDto } from "../dto/settings-response.dto";
+
+import { SettingsEditResponseDto } from "@/dto/settings-response.dto";
+
+import { Settings } from "@/entities/settings";
+import { User } from "@/entities/user";
+
+import { DatabaseService } from "@/services/database.service";
+
+import { fetchUserFromToken } from "@/utils/api.utils";
 
 export class SettingsController {
   private readonly settingsRepo;

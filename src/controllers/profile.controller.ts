@@ -1,14 +1,19 @@
 import { Request, Response } from "express";
-import { DatabaseService } from "../services/database.service";
-import { User } from "../entities/user";
+
 import { z } from "zod";
-import { assignDefinedValues } from "../utils/object.utils";
+
 import {
   ProfileEditPictureResponseDto,
   ProfileEditResponseDto,
   ProfileGetResponseDto,
-} from "../dto/profile-response.dto";
-import { fetchUserFromToken } from "../utils/api.utils";
+} from "@/dto/profile-response.dto";
+
+import { User } from "@/entities/user";
+
+import { DatabaseService } from "@/services/database.service";
+
+import { fetchUserFromToken } from "@/utils/api.utils";
+import { assignDefinedValues } from "@/utils/object.utils";
 
 export class ProfileController {
   private readonly userRepo;

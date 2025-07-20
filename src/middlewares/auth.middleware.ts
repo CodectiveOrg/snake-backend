@@ -1,6 +1,8 @@
 import { RequestHandler } from "express";
+
 import jwt from "jsonwebtoken";
-import { TokenPayload } from "../types/token-payload";
+
+import { TokenPayload } from "@/types/token-payload";
 
 export const authMiddleware: RequestHandler = (req, res, next) => {
   const token = req.cookies[process.env.TOKEN_KEY!];

@@ -1,6 +1,8 @@
-import { Repository } from "typeorm";
-import { User } from "../entities/user";
 import { Response } from "express";
+
+import { Repository } from "typeorm";
+
+import { User } from "@/entities/user";
 
 export async function fetchUserFromToken(
   res: Response,

@@ -1,19 +1,24 @@
 import { Request, Response } from "express";
+
 import { z } from "zod";
-import { DatabaseService } from "../services/database.service";
-import { User } from "../entities/user";
-import {
-  comparePasswords,
-  generateToken,
-  hashPassword,
-} from "../utils/auth.utils";
-import { mapToTokenPayload } from "../utils/mapper.utils";
+
 import {
   AuthSignInResponseDto,
   AuthSignOutResponseDto,
   AuthSignUpResponseDto,
   AuthVerifyResponseDto,
-} from "../dto/auth-response.dto";
+} from "@/dto/auth-response.dto";
+
+import { User } from "@/entities/user";
+
+import { DatabaseService } from "@/services/database.service";
+
+import {
+  comparePasswords,
+  generateToken,
+  hashPassword,
+} from "@/utils/auth.utils";
+import { mapToTokenPayload } from "@/utils/mapper.utils";
 
 export class AuthController {
   private readonly userRepo;

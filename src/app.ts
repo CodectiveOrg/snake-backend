@@ -1,20 +1,26 @@
-import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import swaggerUi from "swagger-ui-express";
-import swaggerDocs from "../swagger.json";
-import "reflect-metadata";
-import "dotenv/config";
+import express from "express";
 
-import { validateEnv } from "./utils/env.utils";
-import { DatabaseService } from "./services/database.service";
-import { generatePublicRoutes } from "./routes/public.route";
-import { generateAuthRoutes } from "./routes/auth.route";
-import { globalErrorHandler } from "./handlers/global-error.handler";
-import { generateSettingsRoutes } from "./routes/settings.route";
-import { generateProfileRoutes } from "./routes/profile.route";
-import { generateHistoryRoutes } from "./routes/history.route";
+import swaggerUi from "swagger-ui-express";
+
+import "dotenv/config";
+import "reflect-metadata";
+
+import swaggerDocs from "@/swagger/swagger.json";
+
+import { globalErrorHandler } from "@/handlers/global-error.handler";
+
+import { generateAuthRoutes } from "@/routes/auth.route";
+import { generateHistoryRoutes } from "@/routes/history.route";
+import { generateProfileRoutes } from "@/routes/profile.route";
+import { generatePublicRoutes } from "@/routes/public.route";
+import { generateSettingsRoutes } from "@/routes/settings.route";
+
+import { DatabaseService } from "@/services/database.service";
+
+import { validateEnv } from "@/utils/env.utils";
 
 const PORT = process.env.PORT || 5000;
 
