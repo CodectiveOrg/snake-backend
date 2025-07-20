@@ -6,7 +6,7 @@ import { User } from "../entities/user";
 import {
   PublicGetLeaderboardResponseDto,
   PublicGetUserPublicInfoResponseDto,
-} from "../dto/response.dto";
+} from "../dto/public-response.dto";
 
 export class PublicController {
   private readonly historyRepo;

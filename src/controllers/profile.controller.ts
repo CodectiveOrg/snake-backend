@@ -7,7 +7,7 @@ import {
   ProfileEditPictureResponseDto,
   ProfileEditResponseDto,
   ProfileGetResponseDto,
-} from "../dto/response.dto";
+} from "../dto/profile-response.dto";
 import { fetchUserFromToken } from "../utils/api.utils";
 
 export class ProfileController {

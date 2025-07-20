@@ -4,7 +4,7 @@ import { DatabaseService } from "../services/database.service";
 import { Settings } from "../entities/settings";
 import { User } from "../entities/user";
 import { fetchUserFromToken } from "../utils/api.utils";
-import { SettingsGetResponseDto } from "../dto/response.dto";
+import { SettingsGetResponseDto } from "../dto/settings-response.dto";
 
 export class SettingsController {
   private readonly settingsRepo;

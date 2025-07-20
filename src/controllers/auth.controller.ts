@@ -13,7 +13,7 @@ import {
   AuthSignOutResponseDto,
   AuthSignUpResponseDto,
   AuthVerifyResponseDto,
-} from "../dto/response.dto";
+} from "../dto/auth-response.dto";
 
 export class AuthController {
   private readonly userRepo;

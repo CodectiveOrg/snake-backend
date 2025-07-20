@@ -9,7 +9,7 @@ import {
   HistoryGetHighScoreResponseDto,
   HistoryGetUserHistoryResponseDto,
   HistoryGetUserRankResponseDto,
-} from "../dto/response.dto";
+} from "../dto/history-response.dto";
 
 export class HistoryController {
   private readonly historyRepo;
