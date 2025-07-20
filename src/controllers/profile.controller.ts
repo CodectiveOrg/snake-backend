@@ -8,9 +8,10 @@ import {
   ProfileEditResponseDto,
   ProfileGetResponseDto,
 } from "../dto/response.dto";
+import { fetchUserFromToken } from "../utils/api.utils";
 
 export class ProfileController {
-  private userRepo;
+  private readonly userRepo;
 
   public constructor(databaseService: DatabaseService) {
     this.userRepo = databaseService.dataSource.getRepository(User);
@@ -24,14 +25,7 @@ export class ProfileController {
     _: Request,
     res: Response<ProfileGetResponseDto>,
   ): Promise<void> {
-    const { username } = res.locals.user;
-
-    const user = await this.userRepo.findOne({ where: { username } });
-
-    if (!user) {
-      res.sendStatus(401);
-      return;
-    }
+    const user = await fetchUserFromToken(res, this.userRepo);
 
     const record = {
       username: user.username,
@@ -50,16 +44,8 @@ export class ProfileController {
     req: Request,
     res: Response<ProfileEditResponseDto>,
   ): Promise<void> {
-    const { username } = res.locals.user;
-
     const body = EditProfileSchema.parse(req.body);
-
-    const user = await this.userRepo.findOne({ where: { username } });
-
-    if (!user) {
-      res.sendStatus(401);
-      return;
-    }
+    const user = await fetchUserFromToken(res, this.userRepo);
 
     const updatedUser = assignDefinedValues(user, body);
     await this.userRepo.save(updatedUser);
@@ -74,14 +60,7 @@ export class ProfileController {
     req: Request,
     res: Response<ProfileEditPictureResponseDto>,
   ): Promise<void> {
-    const { username } = res.locals.user;
-
-    const user = await this.userRepo.findOne({ where: { username } });
-
-    if (!user) {
-      res.sendStatus(401);
-      return;
-    }
+    const user = await fetchUserFromToken(res, this.userRepo);
 
     if (!req.file) {
       user.picture = null;

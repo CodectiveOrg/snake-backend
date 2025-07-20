@@ -16,7 +16,7 @@ import {
 } from "../dto/response.dto";
 
 export class AuthController {
-  private userRepo;
+  private readonly userRepo;
 
   public constructor(databaseService: DatabaseService) {
     this.userRepo = databaseService.dataSource.getRepository(User);
