@@ -5,12 +5,12 @@ import { History } from "../entities/history";
 import { User } from "../entities/user";
 import { fetchUserFromToken } from "../utils/api.utils";
 import {
-  CreateHistoryResponseDto,
-  GetHighScoreResponseDto,
-  GetLeaderboardResponseDto,
-  GetUserHistoryResponseDto,
-  GetUserPublicInfoResponseDto,
-  GetUserRankResponseDto,
+  PublicCreateHistoryResponseDto,
+  PublicGetHighScoreResponseDto,
+  PublicGetLeaderboardResponseDto,
+  PublicGetUserHistoryResponseDto,
+  PublicGetUserPublicInfoResponseDto,
+  PublicGetUserRankResponseDto,
 } from "../dto/response.dto";
 
 export class PublicController {
@@ -31,7 +31,7 @@ export class PublicController {
 
   public async createHistory(
     req: Request,
-    res: Response<CreateHistoryResponseDto>,
+    res: Response<PublicCreateHistoryResponseDto>,
   ): Promise<void> {
     const body = CreateHistoryBodySchema.parse(req.body);
     const user = await fetchUserFromToken(res, this.userRepo);
@@ -46,7 +46,7 @@ export class PublicController {
 
   public async getLeaderboard(
     _: Request,
-    res: Response<GetLeaderboardResponseDto>,
+    res: Response<PublicGetLeaderboardResponseDto>,
   ): Promise<void> {
     const records = await this.historyRepo
       .createQueryBuilder("history")
@@ -67,7 +67,7 @@ export class PublicController {
 
   public async getUserRank(
     _: Request,
-    res: Response<GetUserRankResponseDto>,
+    res: Response<PublicGetUserRankResponseDto>,
   ): Promise<void> {
     const user = await fetchUserFromToken(res, this.userRepo);
 
@@ -100,7 +100,7 @@ export class PublicController {
 
   public async getHighScore(
     _: Request,
-    res: Response<GetHighScoreResponseDto>,
+    res: Response<PublicGetHighScoreResponseDto>,
   ): Promise<void> {
     const user = await fetchUserFromToken(res, this.userRepo);
 
@@ -121,7 +121,7 @@ export class PublicController {
 
   public async getUserPublicInfo(
     req: Request,
-    res: Response<GetUserPublicInfoResponseDto>,
+    res: Response<PublicGetUserPublicInfoResponseDto>,
   ): Promise<void> {
     const body = GetUserPublicInfoBodySchema.parse(req.body);
 
@@ -149,7 +149,7 @@ export class PublicController {
 
   public async getUserHistory(
     _: Request,
-    res: Response<GetUserHistoryResponseDto>,
+    res: Response<PublicGetUserHistoryResponseDto>,
   ): Promise<void> {
     const user = await fetchUserFromToken(res, this.userRepo);
 
