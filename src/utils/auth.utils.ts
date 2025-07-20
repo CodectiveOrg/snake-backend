@@ -3,9 +3,9 @@ import { Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import { TokenPayload } from "@/types/token-payload";
+import { TokenPayloadType } from "@/types/token-payload.type";
 
-export function generateToken(res: Response, payload: TokenPayload): void {
+export function generateToken(res: Response, payload: TokenPayloadType): void {
   const token = jwt.sign(payload, process.env.TOKEN_SECRET!, {
     expiresIn: "3d",
   });
