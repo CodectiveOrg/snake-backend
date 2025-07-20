@@ -12,7 +12,7 @@ export class DatabaseService {
       database: "database/snake.sqlite",
       entities: [User, History, Settings],
       synchronize: true,
-      logging: true,
+      logging: false,
     });
   }
 
