@@ -3,7 +3,7 @@ import { ResponseDto } from "@/dto/response.dto";
 import { User } from "@/entities/user";
 
 export type PublicGetLeaderboardResponseDto = ResponseDto<
-  { username: string; rank: number }[]
+  { username: string; highScore: number }[]
 >;
 
 export type PublicGetUserPublicInfoResponseDto = ResponseDto<
