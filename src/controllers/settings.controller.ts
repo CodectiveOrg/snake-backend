@@ -4,7 +4,7 @@ import { DatabaseService } from "../services/database.service";
 import { Settings } from "../entities/settings";
 import { User } from "../entities/user";
 import { fetchUserFromToken } from "../utils/api.utils";
-import { SettingsGetResponseDto } from "../dto/settings-response.dto";
+import { SettingsEditResponseDto } from "../dto/settings-response.dto";
 
 export class SettingsController {
   private readonly settingsRepo;
@@ -14,14 +14,14 @@ export class SettingsController {
     this.settingsRepo = databaseService.dataSource.getRepository(Settings);
     this.userRepo = databaseService.dataSource.getRepository(User);
 
-    this.getSettings = this.getSettings.bind(this);
+    this.editSettings = this.editSettings.bind(this);
   }
 
-  public async getSettings(
+  public async editSettings(
     req: Request,
-    res: Response<SettingsGetResponseDto>,
+    res: Response<SettingsEditResponseDto>,
   ): Promise<void> {
-    const body = GetUserSettingsBodySchema.parse(req.body);
+    const body = EditSettingsBodySchema.parse(req.body);
     const user = await fetchUserFromToken(res, this.userRepo);
 
     await this.settingsRepo.save({
@@ -37,7 +37,7 @@ export class SettingsController {
   }
 }
 
-const GetUserSettingsBodySchema = z.object({
+const EditSettingsBodySchema = z.object({
   music: z.number().min(0).max(10),
   sfx: z.number().min(0).max(10),
 });
