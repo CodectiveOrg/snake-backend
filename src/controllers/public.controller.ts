@@ -44,8 +44,9 @@ export class PublicController {
   public async getLeaderboard(_: Request, res: Response): Promise<void> {
     const records = await this.historyRepo
       .createQueryBuilder("history")
-      .select("history.username", "username")
+      .select("user.username", "username")
       .addSelect("MAX(history.score)", "highScore")
+      .leftJoin("history.user", "user")
       .groupBy("username")
       .orderBy("history.score", "DESC")
       .limit(5)
@@ -59,30 +60,39 @@ export class PublicController {
   }
 
   public async getUserRank(req: Request, res: Response): Promise<void> {
-    const body = GetUserRankBodySchema.parse(req.body);
-    const { username } = body;
+    const { username } = res.locals.user;
 
-    const records = await this.databaseService.dataSource
+    const user = await this.userRepo.findOne({ where: { username } });
+
+    if (!user) {
+      res.sendStatus(401);
+      return;
+    }
+
+    const record = await this.databaseService.dataSource
       .createQueryBuilder()
-      .select()
+      .select("user.username", "username")
+      .addSelect("t.highScore", "highScore")
+      .addSelect("t.rank", "rank")
       .from(
         (subQuery) =>
           subQuery
-            .select("history.username", "username")
+            .select("history.userId", "userId")
             .addSelect("MAX(history.score)", "highScore")
             .addSelect("ROW_NUMBER() OVER (ORDER BY score DESC)", "rank")
             .from(History, "history")
-            .groupBy("history.username")
+            .groupBy("history.userId")
             .orderBy("history.score", "DESC"),
         "t",
       )
-      .where("t.username = :username", { username })
-      .getRawMany();
+      .leftJoin(User, "user", "user.id = t.userId")
+      .where("t.userId = :userId", { userId: user.id })
+      .getRawOne();
 
     res.status(200).send({
       status: "success",
       message: "User's rank fetched successfully.",
-      data: records,
+      data: record,
     });
   }
 
@@ -162,8 +172,4 @@ export class PublicController {
 const CreateHistoryBodySchema = z.object({
   username: z.string(),
   score: z.number(),
-});
-
-const GetUserRankBodySchema = z.object({
-  username: z.string(),
 });
