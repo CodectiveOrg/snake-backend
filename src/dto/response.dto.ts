@@ -19,3 +19,20 @@ export type ProfileGetResponseDto = ResponseDto<
 >;
 export type ProfileEditResponseDto = ResponseDto;
 export type ProfileEditPictureResponseDto = ResponseDto;
+
+export type CreateHistoryResponseDto = ResponseDto;
+export type GetLeaderboardResponseDto = ResponseDto<
+  { username: string; rank: number }[]
+>;
+export type GetUserRankResponseDto = ResponseDto<{
+  username: string;
+  rank: number;
+  highScore: number;
+}>;
+export type GetHighScoreResponseDto = ResponseDto<{ highScore: number }>;
+export type GetUserPublicInfoResponseDto = ResponseDto<
+  Pick<User, "username" | "email" | "picture">
+>;
+export type GetUserHistoryResponseDto = ResponseDto<
+  { score: number; createdAt: Date }[]
+>;
