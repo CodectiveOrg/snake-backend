@@ -52,6 +52,53 @@
         }
       }
     },
+    "/api/history": {
+      "get": {
+        "summary": "Get current users's history ordered by time",
+        "responses": {
+          "200": {
+            "description": "User history fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/leaderboard": {
       "get": {
         "summary": "Get top 5 users with highest scores",
@@ -700,6 +747,45 @@
             "example": "Profile updated successfully."
           }
         }
+      },
+      "UserHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "User history fetched successfully"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserHistoryRecord"
+            }
+          }
+        },
+        "required": ["status", "message", "data"]
+      },
+      "UserHistoryRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "score": {
+            "type": "integer",
+            "example": 450
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-07-19T16:08:00Z"
+          }
+        },
+        "required": ["id", "score", "createdAt"]
       }
     }
   }
