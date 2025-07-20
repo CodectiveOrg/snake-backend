@@ -1,17 +1,20 @@
 import { DatabaseService } from "../../src/services/database.service";
 import { Repository } from "typeorm";
 import { History } from "../../src/entities/history";
+import { Settings } from "../../src/entities/settings";
 import { User } from "../../src/entities/user";
 import { hashPassword } from "../../src/utils/auth.utils";
 import { USERS } from "./users";
 
 export class Seeder {
   private historyRepo!: Repository<History>;
+  private settingsRepo!: Repository<Settings>;
   private userRepo!: Repository<User>;
 
   public constructor(databaseService: DatabaseService) {
     this.historyRepo = databaseService.dataSource.getRepository(History);
     this.userRepo = databaseService.dataSource.getRepository(User);
+    this.settingsRepo = databaseService.dataSource.getRepository(Settings);
   }
 
   public async seed(): Promise<void> {
@@ -26,9 +29,18 @@ export class Seeder {
       this.seedHistory(USERS[0].username, { score: 4 }),
       this.seedHistory(USERS[3].username, { score: 815 }),
     ]);
+
+    await Promise.allSettled([
+      this.seedSettings(USERS[0].username, { music: 1, sfx: 0 }),
+      this.seedSettings(USERS[1].username, { music: 0, sfx: 1 }),
+      this.seedSettings(USERS[2].username, { music: 1, sfx: 1 }),
+      this.seedSettings(USERS[3].username, { music: 0, sfx: 0 }),
+    ]);
   }
 
-  private async seedUser(user: Omit<User, "id" | "histories">): Promise<void> {
+  private async seedUser(
+    user: Omit<User, "id" | "histories" | "settings">,
+  ): Promise<void> {
     const hashedPassword = await hashPassword(user.password);
     await this.userRepo.save({ ...user, password: hashedPassword });
   }
@@ -45,5 +57,19 @@ export class Seeder {
     }
 
     await this.historyRepo.save({ ...history, user });
+  }
+
+  private async seedSettings(
+    username: string,
+    settings: Omit<Settings, "id" | "user">,
+  ): Promise<void> {
+    const user = await this.userRepo.findOne({ where: { username } });
+
+    if (!user) {
+      console.warn(`Username "${username}" not found for settings.`);
+      return;
+    }
+
+    await this.settingsRepo.save({ ...settings, user });
   }
 }
