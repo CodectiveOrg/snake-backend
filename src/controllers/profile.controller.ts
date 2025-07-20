@@ -3,13 +3,16 @@ import { DatabaseService } from "../services/database.service";
 import { User } from "../entities/user";
 import { z } from "zod";
 import { assignDefinedValues } from "../utils/object.utils";
+import {
+  ProfileEditPictureResponseDto,
+  ProfileEditResponseDto,
+  ProfileGetResponseDto,
+} from "../dto/response.dto";
 
 export class ProfileController {
-  private profileRepo;
   private userRepo;
 
   public constructor(databaseService: DatabaseService) {
-    this.profileRepo = databaseService.dataSource.getRepository(User);
     this.userRepo = databaseService.dataSource.getRepository(User);
 
     this.getProfile = this.getProfile.bind(this);
@@ -17,7 +20,10 @@ export class ProfileController {
     this.editPicture = this.editPicture.bind(this);
   }
 
-  public async getProfile(_: Request, res: Response): Promise<void> {
+  public async getProfile(
+    _: Request,
+    res: Response<ProfileGetResponseDto>,
+  ): Promise<void> {
     const { username } = res.locals.user;
 
     const user = await this.userRepo.findOne({ where: { username } });
@@ -27,19 +33,23 @@ export class ProfileController {
       return;
     }
 
-    const record = await this.profileRepo.findOne({
-      where: { username: user.username },
-      select: { username: true, email: true },
-    });
+    const record = {
+      username: user.username,
+      email: user.email,
+      picture: user.picture,
+    };
 
-    res.send({
-      status: "success",
+    res.json({
+      statusCode: 200,
       message: "Profile info fetched successfully.",
-      data: record,
+      result: record,
     });
   }
 
-  public async editProfile(req: Request, res: Response): Promise<void> {
+  public async editProfile(
+    req: Request,
+    res: Response<ProfileEditResponseDto>,
+  ): Promise<void> {
     const { username } = res.locals.user;
 
     const body = EditProfileSchema.parse(req.body);
@@ -54,13 +64,16 @@ export class ProfileController {
     const updatedUser = assignDefinedValues(user, body);
     await this.userRepo.save(updatedUser);
 
-    res.send({
-      status: "success",
+    res.json({
+      statusCode: 200,
       message: "Profile updated successfully.",
     });
   }
 
-  public async editPicture(req: Request, res: Response): Promise<void> {
+  public async editPicture(
+    req: Request,
+    res: Response<ProfileEditPictureResponseDto>,
+  ): Promise<void> {
     const { username } = res.locals.user;
 
     const user = await this.userRepo.findOne({ where: { username } });
@@ -73,11 +86,19 @@ export class ProfileController {
     if (!req.file) {
       user.picture = null;
       await this.userRepo.save(user);
-      res.status(200).json({ message: "The picture removed successfully" });
+
+      res.json({
+        statusCode: 200,
+        message: "Picture removed successfully.",
+      });
     } else {
       user.picture = req.file.buffer;
       await this.userRepo.save(user);
-      res.status(201).json({ message: "The picture changed successfully" });
+
+      res.json({
+        statusCode: 200,
+        message: "Picture updated successfully.",
+      });
     }
   }
 }
