@@ -373,6 +373,63 @@
           }
         }
       }
+    },
+    "/api/profile/picture": {
+      "post": {
+        "summary": "Edit user picture",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/EditPictureRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The picture removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditPictureResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "The picture changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditPictureResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -390,6 +447,17 @@
           }
         },
         "required": ["username", "score"]
+      },
+      "EditPictureRequest": {
+        "type": "object",
+        "properties": {
+          "picture": {
+            "type": "string",
+            "description": "Edit picture",
+            "format": "binary"
+          }
+        },
+        "required": []
       },
       "CreateHistoryResponse": {
         "type": "object",
@@ -410,6 +478,16 @@
           }
         },
         "required": ["status", "message"]
+      },
+      "EditPictureResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The picture changed successfully"
+          }
+        },
+        "required": ["message"]
       },
       "UserRankRequest": {
         "type": "object",
@@ -449,6 +527,9 @@
           "password": {
             "type": "string",
             "example": "123"
+          },
+          "picture": {
+            "example": null
           },
           "histories": {
             "type": "array",
