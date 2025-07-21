@@ -31,7 +31,7 @@ export class PublicController {
     const records = await this.historyRepo
       .createQueryBuilder("history")
       .select("user.username", "username")
-      .addSelect("MAX(history.score)", "highScore")
+      .addSelect("MAX(history.score)", "totalHighScore")
       .leftJoin("history.user", "user")
       .groupBy("username")
       .orderBy("history.score", "DESC")
