@@ -1,15 +1,29 @@
 import { Request, Response } from "express";
 
+
+
 import { z } from "zod";
 
+
+
 import { SettingsEditResponseDto } from "@/dto/settings-response.dto";
+
+
 
 import { Settings } from "@/entities/settings";
 import { User } from "@/entities/user";
 
+
+
 import { DatabaseService } from "@/services/database.service";
 
+
+
 import { fetchUserFromToken } from "@/utils/api.utils";
+
+
+
+
 
 export class SettingsController {
   private readonly settingsRepo;
@@ -20,6 +34,7 @@ export class SettingsController {
     this.userRepo = databaseService.dataSource.getRepository(User);
 
     this.editSettings = this.editSettings.bind(this);
+    this.getSettings = this.getSettings.bind(this);
   }
 
   public async getSettings(
@@ -42,6 +57,8 @@ export class SettingsController {
     res.status(200).send({
       statusCode: 200,
       message: "Settings fetched successfully.",
+      music: setting.music,
+      sfx: setting.sfx,
     });
   }
 
