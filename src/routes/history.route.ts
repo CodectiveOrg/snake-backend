@@ -16,6 +16,7 @@ export function generateHistoryRoutes(
   router.post("/", authMiddleware, controller.createHistory);
   router.get("/rank", authMiddleware, controller.getUserRank);
   router.get("/high-score", authMiddleware, controller.getHighScore);
+  router.get("/leaderboard", authMiddleware, controller.getLeaderboard);
 
   return router;
 }
