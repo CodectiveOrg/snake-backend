@@ -7,6 +7,7 @@ import { User } from "@/entities/user";
 import { DatabaseService } from "@/services/database.service";
 
 import { hashPassword } from "@/utils/auth.utils";
+import { generateRandomDate } from "@/utils/random.utils";
 
 import { USERS } from "./users";
 
@@ -51,7 +52,7 @@ export class Seeder {
 
   private async seedHistory(
     username: string,
-    history: Omit<History, "id" | "user">,
+    history: Omit<History, "id" | "user" | "createdAt">,
   ): Promise<void> {
     const user = await this.userRepo.findOne({ where: { username } });
 
@@ -60,7 +61,11 @@ export class Seeder {
       return;
     }
 
-    await this.historyRepo.save({ ...history, user });
+    await this.historyRepo.save({
+      ...history,
+      user,
+      createdAt: generateRandomDate(),
+    });
   }
 
   private async seedSettings(

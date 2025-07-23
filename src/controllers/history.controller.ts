@@ -5,6 +5,7 @@ import { z } from "zod";
 import {
   HistoryCreateHistoryResponseDto,
   HistoryGetHighScoreResponseDto,
+  HistoryGetLeaderboardResponseDto,
   HistoryGetUserHistoryResponseDto,
   HistoryGetUserRankResponseDto,
 } from "@/dto/history-response.dto";
@@ -13,6 +14,7 @@ import { History } from "@/entities/history";
 import { User } from "@/entities/user";
 
 import { DatabaseService } from "@/services/database.service";
+import { LeaderboardService } from "@/services/leaderboard.service";
 
 import { fetchUserFromToken } from "@/utils/api.utils";
 
@@ -24,10 +26,11 @@ export class HistoryController {
     this.historyRepo = databaseService.dataSource.getRepository(History);
     this.userRepo = databaseService.dataSource.getRepository(User);
 
+    this.getUserHistory = this.getUserHistory.bind(this);
     this.createHistory = this.createHistory.bind(this);
     this.getUserRank = this.getUserRank.bind(this);
     this.getHighScore = this.getHighScore.bind(this);
-    this.getUserHistory = this.getUserHistory.bind(this);
+    this.getLeaderboard = this.getLeaderboard.bind(this);
   }
 
   public async getUserHistory(
@@ -116,6 +119,22 @@ export class HistoryController {
       message: "Player's high score fetched successfully.",
       result: record,
     });
+  }
+
+  public async getLeaderboard(
+    _: Request,
+    res: Response<HistoryGetLeaderboardResponseDto>,
+  ): Promise<void> {
+    const { username } = res.locals.user;
+
+    const leaderboardService = new LeaderboardService(this.databaseService);
+    const records = await leaderboardService.getLeaderboard(username);
+
+    res.json({
+      statusCode: 200,
+      message: "Leaderboard fetched successfully.",
+      result: records,
+    } as HistoryGetLeaderboardResponseDto);
   }
 }
 

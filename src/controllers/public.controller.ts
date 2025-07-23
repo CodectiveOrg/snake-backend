@@ -2,47 +2,19 @@ import { Request, Response } from "express";
 
 import { z } from "zod";
 
-import {
-  PublicGetLeaderboardResponseDto,
-  PublicGetUserPublicInfoResponseDto,
-} from "@/dto/public-response.dto";
+import { PublicGetUserPublicInfoResponseDto } from "@/dto/public-response.dto";
 
-import { History } from "@/entities/history";
 import { User } from "@/entities/user";
 
 import { DatabaseService } from "@/services/database.service";
 
 export class PublicController {
-  private readonly historyRepo;
   private readonly userRepo;
 
   public constructor(private databaseService: DatabaseService) {
-    this.historyRepo = databaseService.dataSource.getRepository(History);
     this.userRepo = databaseService.dataSource.getRepository(User);
 
-    this.getLeaderboard = this.getLeaderboard.bind(this);
     this.getUserPublicInfo = this.getUserPublicInfo.bind(this);
-  }
-
-  public async getLeaderboard(
-    _: Request,
-    res: Response<PublicGetLeaderboardResponseDto>,
-  ): Promise<void> {
-    const records = await this.historyRepo
-      .createQueryBuilder("history")
-      .select("user.username", "username")
-      .addSelect("MAX(history.score)", "highScore")
-      .leftJoin("history.user", "user")
-      .groupBy("username")
-      .orderBy("history.score", "DESC")
-      .limit(5)
-      .getRawMany();
-
-    res.json({
-      statusCode: 200,
-      message: "Leaderboard fetched successfully.",
-      result: records,
-    });
   }
 
   public async getUserPublicInfo(
