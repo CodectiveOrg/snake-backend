@@ -5,10 +5,10 @@ import { z } from "zod";
 import {
   HistoryCreateHistoryResponseDto,
   HistoryGetHighScoreResponseDto,
+  HistoryGetLeaderboardResponseDto,
   HistoryGetUserHistoryResponseDto,
   HistoryGetUserRankResponseDto,
 } from "@/dto/history-response.dto";
-import { PublicGetLeaderboardResponseDto } from "@/dto/public-response.dto";
 
 import { History } from "@/entities/history";
 import { User } from "@/entities/user";
@@ -123,7 +123,7 @@ export class HistoryController {
 
   public async getLeaderboard(
     _: Request,
-    res: Response<PublicGetLeaderboardResponseDto>,
+    res: Response<HistoryGetLeaderboardResponseDto>,
   ): Promise<void> {
     const { username } = res.locals.user;
 
@@ -134,7 +134,7 @@ export class HistoryController {
       statusCode: 200,
       message: "Leaderboard fetched successfully.",
       result: records,
-    } as PublicGetLeaderboardResponseDto);
+    } as HistoryGetLeaderboardResponseDto);
   }
 }
 
