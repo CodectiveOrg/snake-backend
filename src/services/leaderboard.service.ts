@@ -27,19 +27,20 @@ export class LeaderboardService {
       .select("us.username", "username")
       .addSelect("MAX(us.score)", "totalHighScore")
       .addSelect(`COALESCE(ts.todayHighScore, 0)`, "todayHighScore")
+      .addSelect("ROW_NUMBER() OVER (ORDER BY MAX(us.score) DESC)", "rank")
       .from("(" + userScoresQB.getQuery() + ")", "us")
       .leftJoin(
         "(" + todayScoresQB.getQuery() + ")",
         "ts",
         "ts.username = us.username",
       )
-      .groupBy("us.username");
+      .groupBy("us.username")
+      .orderBy("totalHighScore", "DESC");
 
     const topUsersQB = this.databaseService.dataSource
       .createQueryBuilder()
       .select("*")
       .from("(" + rankedUsersQB.getQuery() + ")", "ranked")
-      .orderBy("ranked.totalHighScore", "DESC")
       .limit(5);
 
     const currentUserQB = this.databaseService.dataSource
@@ -49,15 +50,15 @@ export class LeaderboardService {
       .where("ranked.username = ?");
 
     const finalQuery = `
-      SELECT * FROM (${topUsersQB.getQuery()})
-      UNION ALL
       SELECT * FROM (${currentUserQB.getQuery()})
+      UNION ALL
+      SELECT * FROM (${topUsersQB.getQuery()})
     `;
 
     return await this.databaseService.dataSource.query(finalQuery, [
       today,
-      today,
       username,
+      today,
     ]);
   }
 }
