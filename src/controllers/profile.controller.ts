@@ -13,6 +13,7 @@ import { User } from "@/entities/user";
 import { DatabaseService } from "@/services/database.service";
 
 import { fetchUserFromToken } from "@/utils/api.utils";
+import { hashPassword } from "@/utils/auth.utils";
 import { assignDefinedValues } from "@/utils/object.utils";
 
 export class ProfileController {
@@ -35,6 +36,7 @@ export class ProfileController {
     const record = {
       username: user.username,
       email: user.email,
+      gender: user.gender,
       picture: user.picture,
     };
 
@@ -52,7 +54,14 @@ export class ProfileController {
     const body = EditProfileSchema.parse(req.body);
     const user = await fetchUserFromToken(res, this.userRepo);
 
+    if (body.password) {
+      body.password = await hashPassword(body.password);
+    } else {
+      body.password = undefined;
+    }
+
     const updatedUser = assignDefinedValues(user, body);
+
     await this.userRepo.save(updatedUser);
 
     res.json({
@@ -76,7 +85,8 @@ export class ProfileController {
         message: "Picture removed successfully.",
       });
     } else {
-      user.picture = req.file.buffer;
+      const base64 = req.file.buffer.toString("base64");
+      user.picture = `data:${req.file.mimetype};base64,${base64}`;
       await this.userRepo.save(user);
 
       res.json({
@@ -90,5 +100,6 @@ export class ProfileController {
 const EditProfileSchema = z.object({
   username: z.string().optional(),
   email: z.string().email().optional(),
+  gender: z.enum(["male", "female"]).optional(),
   password: z.string().optional(),
 });

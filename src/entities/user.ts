@@ -21,11 +21,14 @@ export class User {
   @Column("text")
   public email!: string;
 
+  @Column("text", { default: "male" })
+  public gender!: string;
+
   @Column("text")
   public password!: string;
 
-  @Column("blob", { nullable: true })
-  public picture!: Buffer | null;
+  @Column("text", { nullable: true })
+  public picture!: string | null;
 
   @OneToMany(() => History, (history) => history.user)
   public histories!: History[];
