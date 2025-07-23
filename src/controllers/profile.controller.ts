@@ -13,6 +13,7 @@ import { User } from "@/entities/user";
 import { DatabaseService } from "@/services/database.service";
 
 import { fetchUserFromToken } from "@/utils/api.utils";
+import { hashPassword } from "@/utils/auth.utils";
 import { assignDefinedValues } from "@/utils/object.utils";
 
 export class ProfileController {
@@ -53,7 +54,14 @@ export class ProfileController {
     const body = EditProfileSchema.parse(req.body);
     const user = await fetchUserFromToken(res, this.userRepo);
 
+    if (body.password) {
+      body.password = await hashPassword(body.password);
+    } else {
+      body.password = undefined;
+    }
+
     const updatedUser = assignDefinedValues(user, body);
+
     await this.userRepo.save(updatedUser);
 
     res.json({
@@ -91,5 +99,6 @@ export class ProfileController {
 const EditProfileSchema = z.object({
   username: z.string().optional(),
   email: z.string().email().optional(),
+  gender: z.enum(["male", "female"]).optional(),
   password: z.string().optional(),
 });
