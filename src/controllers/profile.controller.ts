@@ -85,7 +85,8 @@ export class ProfileController {
         message: "Picture removed successfully.",
       });
     } else {
-      user.picture = req.file.buffer;
+      const base64 = req.file.buffer.toString("base64");
+      user.picture = `data:${req.file.mimetype};base64,${base64}`;
       await this.userRepo.save(user);
 
       res.json({
