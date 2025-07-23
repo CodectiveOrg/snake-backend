@@ -12,6 +12,7 @@ export function generateSettingsRoutes(
   const router = Router();
   const controller = new SettingsController(databaseService);
 
+  router.get("/", authMiddleware, controller.getSettings);
   router.post("/", authMiddleware, controller.editSettings);
 
   return router;
