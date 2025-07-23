@@ -21,6 +21,9 @@ export class User {
   @Column("text")
   public email!: string;
 
+  @Column("text", { default: "male" })
+  public gender!: string;
+
   @Column("text")
   public password!: string;
 

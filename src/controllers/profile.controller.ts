@@ -35,6 +35,7 @@ export class ProfileController {
     const record = {
       username: user.username,
       email: user.email,
+      gender: user.gender,
       picture: user.picture,
     };
 
