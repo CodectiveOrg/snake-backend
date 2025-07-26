@@ -2,13 +2,12 @@ import { ResponseDto } from "@/dto/response.dto";
 
 export type HistoryCreateHistoryResponseDto = ResponseDto;
 
-export type HistoryGetUserRankResponseDto = ResponseDto<{
+export type HistoryGetStatsResponseDto = ResponseDto<{
   username: string;
-  rank: number;
+  picture: string | null;
   highScore: number;
+  rank: number;
 }>;
-
-export type HistoryGetHighScoreResponseDto = ResponseDto<{ highScore: number }>;
 
 export type HistoryGetUserHistoryResponseDto = ResponseDto<
   { score: number; createdAt: Date }[]
