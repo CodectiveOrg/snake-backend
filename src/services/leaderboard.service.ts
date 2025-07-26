@@ -9,6 +9,7 @@ export class LeaderboardService {
     const userScoresQB = this.databaseService.dataSource
       .createQueryBuilder()
       .select("u.username", "username")
+      .addSelect("u.picture", "picture")
       .addSelect("h.score", "score")
       .addSelect("h.createdAt", "createdAt")
       .from("history", "h")
@@ -25,6 +26,7 @@ export class LeaderboardService {
     const rankedUsersQB = this.databaseService.dataSource
       .createQueryBuilder()
       .select("us.username", "username")
+      .addSelect("us.picture", "picture")
       .addSelect("MAX(us.score)", "totalHighScore")
       .addSelect(`COALESCE(ts.todayHighScore, 0)`, "todayHighScore")
       .addSelect("ROW_NUMBER() OVER (ORDER BY MAX(us.score) DESC)", "rank")
