@@ -4,10 +4,9 @@ import { z } from "zod";
 
 import {
   HistoryCreateHistoryResponseDto,
-  HistoryGetHighScoreResponseDto,
   HistoryGetLeaderboardResponseDto,
+  HistoryGetStatsResponseDto,
   HistoryGetUserHistoryResponseDto,
-  HistoryGetUserRankResponseDto,
 } from "@/dto/history-response.dto";
 
 import { History } from "@/entities/history";
@@ -28,8 +27,7 @@ export class HistoryController {
 
     this.getUserHistory = this.getUserHistory.bind(this);
     this.createHistory = this.createHistory.bind(this);
-    this.getUserRank = this.getUserRank.bind(this);
-    this.getHighScore = this.getHighScore.bind(this);
+    this.getStats = this.getStats.bind(this);
     this.getLeaderboard = this.getLeaderboard.bind(this);
   }
 
@@ -67,15 +65,16 @@ export class HistoryController {
     });
   }
 
-  public async getUserRank(
+  public async getStats(
     _: Request,
-    res: Response<HistoryGetUserRankResponseDto>,
+    res: Response<HistoryGetStatsResponseDto>,
   ): Promise<void> {
     const user = await fetchUserFromToken(res, this.userRepo);
 
     const record = await this.databaseService.dataSource
       .createQueryBuilder()
       .select("user.username", "username")
+      .addSelect("user.picture", "picture")
       .addSelect("t.highScore", "highScore")
       .addSelect("t.rank", "rank")
       .from(
@@ -95,28 +94,7 @@ export class HistoryController {
 
     res.json({
       statusCode: 200,
-      message: "User's rank fetched successfully.",
-      result: record,
-    });
-  }
-
-  public async getHighScore(
-    _: Request,
-    res: Response<HistoryGetHighScoreResponseDto>,
-  ): Promise<void> {
-    const user = await fetchUserFromToken(res, this.userRepo);
-
-    const record = await this.databaseService.dataSource
-      .createQueryBuilder()
-      .select("MAX(history.score)", "highScore")
-      .from(History, "history")
-      .where("history.userId = :userId", { userId: user.id })
-      .groupBy("history.userId")
-      .getRawOne();
-
-    res.json({
-      statusCode: 200,
-      message: "Player's high score fetched successfully.",
+      message: "User's stats fetched successfully.",
       result: record,
     });
   }
@@ -139,6 +117,5 @@ export class HistoryController {
 }
 
 const CreateHistoryBodySchema = z.object({
-  username: z.string(),
   score: z.number(),
 });

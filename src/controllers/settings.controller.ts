@@ -68,7 +68,7 @@ export class SettingsController {
 
     res.status(200).send({
       statusCode: 200,
-      message: "Settings fetched successfully.",
+      message: "Settings changed successfully.",
     });
   }
 }
