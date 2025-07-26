@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import {
   EmailSchema,
+  GenderSchema,
   PasswordSchema,
   UsernameSchema,
 } from "@/validation/schemas";
@@ -106,6 +107,6 @@ export class ProfileController {
 const EditProfileSchema = z.object({
   username: UsernameSchema.optional(),
   email: EmailSchema.optional(),
-  gender: z.enum(["male", "female"]).optional(),
+  gender: GenderSchema.optional(),
   password: PasswordSchema.optional(),
 });
