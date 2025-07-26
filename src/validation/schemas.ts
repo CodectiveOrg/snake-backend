@@ -17,4 +17,4 @@ export const PasswordSchema = z
 
 export const GenderSchema = z.enum(["male", "female"]);
 
-export const GameSoundSchema = z.number().min(0).max(10);
+export const SettingsSchema = z.number().min(0).max(10);

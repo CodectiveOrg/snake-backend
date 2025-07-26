@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { z } from "zod";
 
-import { GameSoundSchema } from "@/validation/schemas";
+import { SettingsSchema } from "@/validation/schemas";
 
 import {
   SettingsEditResponseDto,
@@ -76,6 +76,6 @@ export class SettingsController {
 }
 
 const EditSettingsBodySchema = z.object({
-  music: GameSoundSchema,
-  sfx: GameSoundSchema,
+  music: SettingsSchema,
+  sfx: SettingsSchema,
 });
