@@ -31,7 +31,7 @@ export class PublicController {
     if (!record) {
       res.status(404).json({
         statusCode: 404,
-        message: "User not found",
+        message: "User not found.",
         error: "Not Found",
       });
 

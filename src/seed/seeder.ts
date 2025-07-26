@@ -33,13 +33,16 @@ export class Seeder {
       this.seedHistory(USERS[1].username, { score: 8 }),
       this.seedHistory(USERS[0].username, { score: 4 }),
       this.seedHistory(USERS[3].username, { score: 815 }),
+      this.seedHistory(USERS[4].username, { score: 14 }),
+      this.seedHistory(USERS[4].username, { score: 316 }),
     ]);
 
     await Promise.allSettled([
-      this.seedSettings(USERS[0].username, { music: 1, sfx: 0 }),
-      this.seedSettings(USERS[1].username, { music: 0, sfx: 1 }),
-      this.seedSettings(USERS[2].username, { music: 1, sfx: 1 }),
-      this.seedSettings(USERS[3].username, { music: 0, sfx: 0 }),
+      this.seedSettings(USERS[0].username, { music: 10, sfx: 10 }),
+      this.seedSettings(USERS[1].username, { music: 5, sfx: 5 }),
+      this.seedSettings(USERS[2].username, { music: 3, sfx: 0 }),
+      this.seedSettings(USERS[3].username, { music: 4, sfx: 6 }),
+      this.seedSettings(USERS[3].username, { music: 7, sfx: 7 }),
     ]);
   }
 

@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 
 import { z } from "zod";
 
-import { SettingsEditResponseDto } from "@/dto/settings-response.dto";
+import {
+  SettingsEditResponseDto,
+  SettingsGetResponseDto,
+} from "@/dto/settings-response.dto";
 
 import { Settings } from "@/entities/settings";
 import { User } from "@/entities/user";
@@ -24,27 +27,29 @@ export class SettingsController {
   }
 
   public async getSettings(
-    req: Request,
-    res: Response<SettingsEditResponseDto>,
+    _: Request,
+    res: Response<SettingsGetResponseDto>,
   ): Promise<void> {
     const user = await fetchUserFromToken(res, this.userRepo);
 
-    const setting = await this.settingsRepo.findOne({
+    const record = await this.settingsRepo.findOne({
       where: { user: { id: user.id } },
     });
 
-    if (!setting) {
+    if (!record) {
       res.status(404).send({
         statusCode: 404,
-        message: "Settings not found.",
+        message: "User's settings not found.",
+        error: "Not Found",
       });
+
       return;
     }
+
     res.status(200).send({
       statusCode: 200,
       message: "Settings fetched successfully.",
-      music: setting.music,
-      sfx: setting.sfx,
+      result: record,
     });
   }
 
