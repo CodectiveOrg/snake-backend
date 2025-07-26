@@ -3,6 +3,13 @@ import { Request, Response } from "express";
 import { z } from "zod";
 
 import {
+  EmailSchema,
+  GenderSchema,
+  PasswordSchema,
+  UsernameSchema,
+} from "@/validation/schemas";
+
+import {
   ProfileEditPictureResponseDto,
   ProfileEditResponseDto,
   ProfileGetResponseDto,
@@ -98,8 +105,8 @@ export class ProfileController {
 }
 
 const EditProfileSchema = z.object({
-  username: z.string().optional(),
-  email: z.string().email().optional(),
-  gender: z.enum(["male", "female"]).optional(),
-  password: z.string().optional(),
+  username: UsernameSchema.optional(),
+  email: EmailSchema.optional(),
+  gender: GenderSchema.optional(),
+  password: PasswordSchema.optional(),
 });
