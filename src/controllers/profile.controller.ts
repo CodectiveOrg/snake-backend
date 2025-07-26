@@ -3,6 +3,12 @@ import { Request, Response } from "express";
 import { z } from "zod";
 
 import {
+  EmailSchema,
+  PasswordSchema,
+  UsernameSchema,
+} from "@/validation/schemas";
+
+import {
   ProfileEditPictureResponseDto,
   ProfileEditResponseDto,
   ProfileGetResponseDto,
@@ -88,7 +94,7 @@ export class ProfileController {
 }
 
 const EditProfileSchema = z.object({
-  username: z.string().optional(),
-  email: z.string().email().optional(),
-  password: z.string().optional(),
+  username: UsernameSchema.optional(),
+  email: EmailSchema.optional(),
+  password: PasswordSchema.optional(),
 });
