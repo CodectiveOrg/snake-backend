@@ -16,6 +16,7 @@ export type HistoryGetUserHistoryResponseDto = ResponseDto<
 export type HistoryGetLeaderboardResponseDto = ResponseDto<
   {
     username: string;
+    picture: string | null;
     todayHighScore: number;
     totalHighScore: number;
     rank: number;
