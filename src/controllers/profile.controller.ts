@@ -2,12 +2,10 @@ import { Request, Response } from "express";
 
 import { z } from "zod";
 
-import {
-  EmailSchema,
-  GenderSchema,
-  PasswordSchema,
-  UsernameSchema,
-} from "@/validation/schemas";
+import { EmailSchema } from "@/validation/schemas/email.schema";
+import { GenderSchema } from "@/validation/schemas/gender.schema";
+import { PasswordSchema } from "@/validation/schemas/password.schema";
+import { UsernameSchema } from "@/validation/schemas/username.schema";
 
 import {
   ProfileEditPictureResponseDto,

@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 
-import { z } from "zod";
-
-import { SettingsSchema } from "@/validation/schemas";
+import { SettingsSchema } from "@/validation/schemas/settings.schema";
 
 import {
   SettingsEditResponseDto,
@@ -59,7 +57,7 @@ export class SettingsController {
     req: Request,
     res: Response<SettingsEditResponseDto>,
   ): Promise<void> {
-    const body = EditSettingsBodySchema.parse(req.body);
+    const body = SettingsSchema.parse(req.body);
     const user = await fetchUserFromToken(res, this.userRepo);
 
     await this.settingsRepo.save({
@@ -74,8 +72,3 @@ export class SettingsController {
     });
   }
 }
-
-const EditSettingsBodySchema = z.object({
-  music: SettingsSchema,
-  sfx: SettingsSchema,
-});
