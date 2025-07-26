@@ -3,6 +3,12 @@ import { Request, Response } from "express";
 import { z } from "zod";
 
 import {
+  EmailSchema,
+  PasswordSchema,
+  UsernameSchema,
+} from "@/validation/schemas";
+
+import {
   AuthSignInResponseDto,
   AuthSignOutResponseDto,
   AuthSignUpResponseDto,
@@ -135,9 +141,9 @@ export class AuthController {
 }
 
 const SignUpBodySchema = z.object({
-  username: z.string(),
-  email: z.string(),
-  password: z.string(),
+  username: UsernameSchema,
+  email: EmailSchema,
+  password: PasswordSchema,
 });
 
 const SignInBodySchema = z.object({
