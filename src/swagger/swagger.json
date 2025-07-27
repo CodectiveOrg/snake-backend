@@ -183,21 +183,21 @@
     },
     "/api/user/{username}": {
       "get": {
-        "summary": "Get user's public info",
+        "summary": "Get user's public info by username",
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "username",
             "schema": {
               "type": "string"
             },
-            "description": "The name of user to return",
+            "description": "Filter users by username",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "User info",
+            "description": "User's public info",
             "content": {
               "application/json": {
                 "schema": {
@@ -598,25 +598,26 @@
         "properties": {
           "username": {
             "type": "string",
-            "example": "Ali"
+            "example": "bijanprogrammer"
           },
-          "email": {
+          "gender": {
             "type": "string",
-            "example": "Ali@gmail.com"
-          },
-          "password": {
-            "type": "string",
-            "example": "123"
+            "example": "male"
           },
           "picture": {
+            "type": "string",
             "example": null
           },
-          "histories": {
-            "type": "array",
-            "example": []
+          "highScore": {
+            "type": "number",
+            "example": 8008
+          },
+          "rank": {
+            "type": "number",
+            "example": 1001
           }
         },
-        "required": ["username", "score"]
+        "required": ["username", "gender", "picture", "highScore", "rank"]
       },
       "UserRank": {
         "type": "object",

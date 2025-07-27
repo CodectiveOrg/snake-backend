@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-import { Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 
 import { User } from "@/entities/user";
 
@@ -10,7 +10,7 @@ export async function fetchUserFromToken(
 ): Promise<User> {
   const { username } = res.locals.user;
 
-  const user = await userRepo.findOne({ where: { username } });
+  const user = await userRepo.findOne({ where: { username: Like(username) } });
 
   if (!user) {
     throw new Error("User not found.");

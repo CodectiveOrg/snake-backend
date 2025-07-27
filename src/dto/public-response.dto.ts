@@ -1,7 +1,9 @@
 import { ResponseDto } from "@/dto/response.dto";
 
-import { User } from "@/entities/user";
-
-export type PublicGetUserPublicInfoResponseDto = ResponseDto<
-  Pick<User, "username" | "email" | "picture">
->;
+export type PublicGetUserPublicInfoResponseDto = ResponseDto<{
+  username: string;
+  gender: string;
+  picture: string | null;
+  highScore: number;
+  rank: number;
+}>;
