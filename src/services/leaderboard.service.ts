@@ -43,7 +43,7 @@ export class LeaderboardService {
       .createQueryBuilder()
       .select("*")
       .from("(" + rankedUsersQB.getQuery() + ")", "ranked")
-      .where("ranked.username = LIKE(?)");
+      .where("ranked.username LIKE ?");
 
     const topUsersQB = this.databaseService.dataSource
       .createQueryBuilder()
