@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 
+import { Like } from "typeorm";
+
 import { PublicGetUserPublicInfoResponseDto } from "@/dto/public-response.dto";
 
 import { History } from "@/entities/history";
@@ -23,7 +25,7 @@ export class PublicController {
     const { username } = req.params;
 
     const user = await this.userRepo.findOne({
-      where: { username },
+      where: { username: Like(username) },
     });
 
     if (!user) {

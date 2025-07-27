@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 
+import { Like } from "typeorm";
+
 import { z } from "zod";
 
 import { EmailSchema } from "@/validation/schemas/email.schema";
@@ -44,7 +46,7 @@ export class AuthController {
     const { username, email, password } = body;
 
     const user = await this.userRepo.findOne({
-      where: [{ username }, { email }],
+      where: [{ username: Like(username) }, { email: Like(email) }],
     });
 
     if (user) {
@@ -75,7 +77,9 @@ export class AuthController {
     const body = SignInBodySchema.parse(req.body);
     const { username, password } = body;
 
-    const user = await this.userRepo.findOne({ where: { username } });
+    const user = await this.userRepo.findOne({
+      where: { username: Like(username) },
+    });
 
     if (!user) {
       res.status(401).json({

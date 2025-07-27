@@ -39,17 +39,17 @@ export class LeaderboardService {
       .groupBy("us.username")
       .orderBy("totalHighScore", "DESC");
 
+    const currentUserQB = this.databaseService.dataSource
+      .createQueryBuilder()
+      .select("*")
+      .from("(" + rankedUsersQB.getQuery() + ")", "ranked")
+      .where("ranked.username = LIKE(?)");
+
     const topUsersQB = this.databaseService.dataSource
       .createQueryBuilder()
       .select("*")
       .from("(" + rankedUsersQB.getQuery() + ")", "ranked")
       .limit(5);
-
-    const currentUserQB = this.databaseService.dataSource
-      .createQueryBuilder()
-      .select("*")
-      .from("(" + rankedUsersQB.getQuery() + ")", "ranked")
-      .where("ranked.username = ?");
 
     const finalQuery = `
       SELECT * FROM (${currentUserQB.getQuery()})
