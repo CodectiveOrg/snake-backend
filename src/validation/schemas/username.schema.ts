@@ -1,4 +1,4 @@
-import { z } from "zod/index";
+import { z } from "zod";
 
 export const UsernameSchema = z
   .string()
