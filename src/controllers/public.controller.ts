@@ -11,7 +11,7 @@ export class PublicController {
   private readonly userRepo;
 
   public constructor(private databaseService: DatabaseService) {
-    this.userRepo = this.databaseService.dataSource.getRepository(User);
+    this.userRepo = databaseService.dataSource.getRepository(User);
 
     this.getUserPublicInfo = this.getUserPublicInfo.bind(this);
   }
@@ -29,7 +29,7 @@ export class PublicController {
     if (!user) {
       res.status(404).json({
         statusCode: 404,
-        message: "User not found",
+        message: "User not found.",
         error: "Not found",
       });
 
@@ -59,22 +59,6 @@ export class PublicController {
       .getRawOne();
 
     res.json({
-      statusCode: 200,
-      message: "User's public info fetched successfully.",
-      result: record,
-    });
-
-    if (!record) {
-      res.status(404).json({
-        statusCode: 404,
-        message: "User not found.",
-        error: "Not Found",
-      });
-
-      return;
-    }
-
-    res.status(200).send({
       statusCode: 200,
       message: "User's public info fetched successfully.",
       result: record,
