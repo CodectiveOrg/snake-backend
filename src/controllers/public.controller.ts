@@ -21,11 +21,11 @@ export class PublicController {
     res: Response<PublicGetUserPublicInfoResponseDto>,
   ): Promise<void> {
     const { username } = req.params;
-    
+
     const user = await this.userRepo.findOne({
       where: { username },
     });
-    
+
     if (!user) {
       res.status(404).json({
         statusCode: 404,
