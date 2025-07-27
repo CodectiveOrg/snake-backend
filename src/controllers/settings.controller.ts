@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 
 import { z } from "zod";
 
+import { VolumeSchema } from "@/validation/schemas/volume.schema";
+
 import {
   SettingsEditResponseDto,
   SettingsGetResponseDto,
@@ -74,6 +76,6 @@ export class SettingsController {
 }
 
 const EditSettingsBodySchema = z.object({
-  music: z.number().min(0).max(10),
-  sfx: z.number().min(0).max(10),
+  music: VolumeSchema,
+  sfx: VolumeSchema,
 });

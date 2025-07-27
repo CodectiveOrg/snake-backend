@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 
 import { z } from "zod";
 
+import { ScoreScheme } from "@/validation/schemas/score.schema";
+
 import {
   HistoryCreateHistoryResponseDto,
   HistoryGetLeaderboardResponseDto,
@@ -117,5 +119,5 @@ export class HistoryController {
 }
 
 const CreateHistoryBodySchema = z.object({
-  score: z.number(),
+  score: ScoreScheme,
 });
